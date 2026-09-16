@@ -1,0 +1,73 @@
+# Exported by three-d-stage
+newmtl platform_ply
+Kd 0.1470 0.0931 0.0578
+Ks 0.2000 0.2000 0.2000
+Ns 40
+d 1.0000
+
+newmtl platform_edge
+Kd 0.0452 0.0307 0.0222
+Ks 0.2000 0.2000 0.2000
+Ns 50
+d 1.0000
+
+newmtl brass
+Kd 0.6867 0.4452 0.1022
+Ks 0.2000 0.2000 0.2000
+Ns 124
+d 1.0000
+
+newmtl paper
+Kd 0.8879 0.8632 0.7913
+Ks 0.2000 0.2000 0.2000
+Ns 30
+d 1.0000
+
+newmtl bill_ink
+Kd 0.0284 0.0497 0.0252
+Ks 0.2000 0.2000 0.2000
+Ns 60
+d 1.0000
+
+newmtl marble_weathered
+Kd 0.6514 0.6240 0.5647
+Ks 0.2000 0.2000 0.2000
+Ns 44
+d 1.0000
+
+newmtl marble
+Kd 0.8388 0.8148 0.7605
+Ks 0.2000 0.2000 0.2000
+Ns 76
+d 1.0000
+
+newmtl wire
+Kd 0.5210 0.5029 0.4678
+Ks 0.2000 0.2000 0.2000
+Ns 120
+d 1.0000
+
+newmtl bill_green
+Kd 0.1095 0.1946 0.0908
+Ks 0.2000 0.2000 0.2000
+Ns 56
+d 1.0000
+
+newmtl tag_card
+Kd 0.5841 0.0529 0.0284
+Ks 0.2000 0.2000 0.2000
+Ns 40
+d 1.0000
+
+newmtl black_acrylic
+Kd 0.0040 0.0037 0.0037
+Ks 0.2000 0.2000 0.2000
+Ns 132
+d 1.0000
+
+newmtl visitor_grey
+Kd 0.3278 0.3095 0.2747
+Ks 0.2000 0.2000 0.2000
+Ns 60
+d 1.0000
+
