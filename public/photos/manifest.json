@@ -1,0 +1,34 @@
+{
+  "oatnet": [],
+  "corporations": [],
+  "subtraction-games": [],
+  "driveaeye": [],
+  "babyvlm": [],
+  "safenet": [],
+  "machina-mundi": [
+    {
+      "src": "photos/machina-mundi/01-YMCA-AI-workshop.jpg",
+      "alt": "YMCA AI workshop"
+    },
+    {
+      "src": "photos/machina-mundi/02-Learning-about-AI.jpg",
+      "alt": "Learning about AI"
+    },
+    {
+      "src": "photos/machina-mundi/03-Congressional-meeting.png",
+      "alt": "Congressional meeting"
+    }
+  ],
+  "convoaave": [
+    {
+      "src": "photos/convoaave/01-Princeton-Prize-ceremony.jpg",
+      "alt": "Princeton Prize ceremony"
+    },
+    {
+      "src": "photos/convoaave/02-Presenting-ConvoAAVE.jpg",
+      "alt": "Presenting ConvoAAVE"
+    }
+  ],
+  "student-ai": [],
+  "gala": []
+}

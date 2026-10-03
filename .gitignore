@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.cache/
+test-results/
+.env*
+!.env.example
+Microsoft/
+public/models/
+public/head.stl
