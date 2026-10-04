@@ -66,7 +66,7 @@ function orbitObject(type) {
 export async function createPortrait(container, { onReady, onError } = {}) {
   let s;
   try { s = studio(container); } catch (error) { onError?.(error); return { dispose() {} }; }
-  const camera = new THREE.PerspectiveCamera(36, 1, .1, 80); camera.position.set(0, 4.4, 15); camera.lookAt(0, .45, 0); s.setCamera(camera);
+  const camera = new THREE.PerspectiveCamera(36, 1, .1, 80); camera.position.set(0, 4.4, 14.2); camera.lookAt(0, .45, 0); s.setCamera(camera);
   const world = new THREE.Group(); s.scene.add(world);
   mesh(new THREE.CylinderGeometry(1.44, 1.5, .18, 96), mat('#e1dace', .05, .75), world, [0, -1.8, 0]);
   mesh(new THREE.CylinderGeometry(1.46, 1.46, .025, 96), mat(colors.gold, .65, .32), world, [0, -1.685, 0]);
@@ -98,7 +98,7 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   s.loop((t, dt) => {
     const mobile = container.clientWidth < 650;
     world.scale.setScalar(1);
-    camera.position.z = mobile ? 14.8 : 15; camera.lookAt(0, .45, 0);
+    camera.position.z = mobile ? 14.8 : 14.2; camera.lookAt(0, .45, 0);
     if (!isPaused && !hover && !dragging) { elapsed += dt; rotation += dt * .095; }
     if (head) head.rotation.y = rotation;
     for (const p of orbits) {
@@ -110,7 +110,9 @@ export async function createPortrait(container, { onReady, onError } = {}) {
       if (p.link) {
         const rect = container.getBoundingClientRect(), half = p.link.offsetWidth / 2;
         const x = (projection.x * .5 + .5) * rect.width;
-        p.link.style.left = `${Math.max(14 - rect.left + half, Math.min(innerWidth - 14 - rect.left - half, x))}px`;
+        const minX = Math.max(half + 12, half + 12 - rect.left);
+        const maxX = Math.min(rect.width - half - 12, innerWidth - rect.left - half - 12);
+        p.link.style.left = `${Math.max(minX, Math.min(maxX, x))}px`;
         p.link.style.top = `${(-projection.y * .5 + .5) * 100}%`;
       }
     }
