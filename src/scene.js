@@ -74,6 +74,7 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   const links = [...container.querySelectorAll('.orbit-link')];
   const paths = [
     { route: 'projects', a: 4.5, b: 2.4, phase: 3.7, tilt: .55 },
+    { route: 'rise', a: 4.8, b: 2.8, phase: 4.9, tilt: .7 },
     { route: 'research', a: 4.5, b: 2.4, phase: 5.65, tilt: -.55 },
     { route: 'equity', a: 5.1, b: 3.2, phase: 2.45, tilt: -.3 },
     { route: 'gala', a: 5, b: 3.2, phase: .6, tilt: .5 },
@@ -82,7 +83,7 @@ export async function createPortrait(container, { onReady, onError } = {}) {
     const points = Array.from({ length: 181 }, (_, k) => { const t = k / 180 * Math.PI * 2; return new THREE.Vector3(Math.cos(t) * p.a, Math.sin(t) * p.tilt, Math.sin(t) * p.b); });
     const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: i % 2 ? '#b4b7ad' : colors.gold, transparent: true, opacity: .4 }));
     ring.position.y = -.3; world.add(ring);
-    const object = orbitObject(p.route); world.add(object);
+    const object = orbitObject(p.route === 'rise' ? 'research' : p.route); world.add(object);
     return { ...p, ring, object, link: links.find(l => l.dataset.route === p.route) };
   });
   let head, isPaused = reduced(), elapsed = 0, hover = false, dragging = false, previousX = 0, rotation = -.28;
@@ -98,9 +99,9 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   s.loop((t, dt) => {
     const mobile = innerWidth < 760;
     world.scale.setScalar(1);
-    camera.position.z = mobile ? 14.8 : 13.2; camera.lookAt(0, .45, 0);
+    camera.position.z = mobile ? 14.8 : innerWidth > 1000 ? 11.8 : 13.2; camera.lookAt(0, innerWidth > 1000 ? 1.45 : .45, 0);
     if (!isPaused && !hover && !dragging) { elapsed += dt; rotation += dt * .095; }
-    if (head) { head.rotation.y = rotation; head.scale.setScalar(innerWidth > 1000 ? 1.22 : 1); head.position.y = innerWidth > 1000 ? 1.4 : .85; }
+    if (head) { head.rotation.y = rotation; head.scale.setScalar(innerWidth > 1000 ? 1.35 : 1); head.position.y = innerWidth > 1000 ? 1.73 : .85; }
     const orbitWidth = Math.min(1, container.clientWidth / container.clientHeight);
     for (const p of orbits) {
       const angle = p.phase + elapsed * .027;
@@ -110,6 +111,10 @@ export async function createPortrait(container, { onReady, onError } = {}) {
       p.object.rotation.y = elapsed * .18;
       p.object.updateWorldMatrix(true, false); p.object.getWorldPosition(projection); projection.project(camera);
       if (p.link) {
+        if (p.link.classList.contains('distinction-orbit')) {
+          p.link.style.setProperty('--drift', `${Math.sin(elapsed * .65 + p.phase) * 7}px`);
+          continue;
+        }
         const rect = container.getBoundingClientRect(), half = p.link.offsetWidth / 2;
         const x = (projection.x * .5 + .5) * rect.width;
         const minX = Math.max(half + 12, half + 12 - rect.left);
