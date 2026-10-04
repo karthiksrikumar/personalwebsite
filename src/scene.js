@@ -83,7 +83,7 @@ export async function createPortrait(container, { onReady, onError } = {}) {
     const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: i % 2 ? '#b4b7ad' : colors.gold, transparent: true, opacity: .4 }));
     ring.position.y = -.3; world.add(ring);
     const object = orbitObject(p.route); world.add(object);
-    return { ...p, object, link: links.find(l => l.dataset.route === p.route) };
+    return { ...p, ring, object, link: links.find(l => l.dataset.route === p.route) };
   });
   let head, isPaused = reduced(), elapsed = 0, hover = false, dragging = false, previousX = 0, rotation = -.28;
   const rotationButton = container.parentElement.querySelector('[data-pause]');
@@ -100,10 +100,12 @@ export async function createPortrait(container, { onReady, onError } = {}) {
     world.scale.setScalar(1);
     camera.position.z = mobile ? 14.8 : 13.2; camera.lookAt(0, .45, 0);
     if (!isPaused && !hover && !dragging) { elapsed += dt; rotation += dt * .095; }
-    if (head) head.rotation.y = rotation;
+    if (head) { head.rotation.y = rotation; head.scale.setScalar(innerWidth > 1000 ? 1.22 : 1); head.position.y = innerWidth > 1000 ? 1.4 : .85; }
+    const orbitWidth = Math.min(1, container.clientWidth / container.clientHeight);
     for (const p of orbits) {
       const angle = p.phase + elapsed * .027;
-      p.object.position.set(Math.cos(angle) * p.a * (mobile ? .65 : 1), Math.sin(angle) * p.tilt + .25, Math.sin(angle) * p.b * (mobile ? 1.12 : 1));
+      p.ring.scale.x = mobile ? 1 : orbitWidth;
+      p.object.position.set(Math.cos(angle) * p.a * (mobile ? .65 : orbitWidth), Math.sin(angle) * p.tilt + .25, Math.sin(angle) * p.b * (mobile ? 1.12 : 1));
       p.object.scale.setScalar(mobile ? .87 : 1.28);
       p.object.rotation.y = elapsed * .18;
       p.object.updateWorldMatrix(true, false); p.object.getWorldPosition(projection); projection.project(camera);
