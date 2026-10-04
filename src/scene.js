@@ -66,7 +66,7 @@ function orbitObject(type) {
 export async function createPortrait(container, { onReady, onError } = {}) {
   let s;
   try { s = studio(container); } catch (error) { onError?.(error); return { dispose() {} }; }
-  const camera = new THREE.PerspectiveCamera(36, 1, .1, 80); camera.position.set(0, 4.4, 14.2); camera.lookAt(0, .45, 0); s.setCamera(camera);
+  const camera = new THREE.PerspectiveCamera(36, 1, .1, 80); camera.position.set(0, 4.4, innerWidth < 760 ? 14.8 : 13.2); camera.lookAt(0, .45, 0); s.setCamera(camera);
   const world = new THREE.Group(); s.scene.add(world);
   mesh(new THREE.CylinderGeometry(1.44, 1.5, .18, 96), mat('#e1dace', .05, .75), world, [0, -1.8, 0]);
   mesh(new THREE.CylinderGeometry(1.46, 1.46, .025, 96), mat(colors.gold, .65, .32), world, [0, -1.685, 0]);
@@ -96,9 +96,9 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   links.forEach(link => { link.addEventListener('mouseenter', () => hover = true); link.addEventListener('mouseleave', () => hover = false); link.addEventListener('focus', () => hover = true); link.addEventListener('blur', () => hover = false); });
   const projection = new THREE.Vector3();
   s.loop((t, dt) => {
-    const mobile = container.clientWidth < 650;
+    const mobile = innerWidth < 760;
     world.scale.setScalar(1);
-    camera.position.z = mobile ? 14.8 : 14.2; camera.lookAt(0, .45, 0);
+    camera.position.z = mobile ? 14.8 : 13.2; camera.lookAt(0, .45, 0);
     if (!isPaused && !hover && !dragging) { elapsed += dt; rotation += dt * .095; }
     if (head) head.rotation.y = rotation;
     for (const p of orbits) {

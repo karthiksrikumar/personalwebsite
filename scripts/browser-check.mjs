@@ -18,6 +18,19 @@ const desktopOverlap = await page.evaluate(() => { const copy = [...document.que
 if (desktopOverlap) throw new Error('Hero copy overlaps orbit navigation on desktop');
 await page.screenshot({ path: '.cache/screenshots/home-desktop.png', fullPage: false });
 await page.locator('.home-highlights').screenshot({ path: '.cache/screenshots/highlights-desktop.png' });
+for (const size of [{ width: 1884, height: 770 }, { width: 1507, height: 616 }, { width: 1440, height: 650 }]) {
+  await page.setViewportSize(size);
+  await page.waitForTimeout(250);
+  const firstScreen = await page.evaluate(() => {
+    const headStage = document.querySelector('.portrait-stage').getBoundingClientRect();
+    const lastAward = document.querySelector('.home-highlights li:last-child').getBoundingClientRect();
+    const copy = [...document.querySelectorAll('.hero-intro h1,.hero-intro p')].map(e => e.getBoundingClientRect());
+    const overlap = [...document.querySelectorAll('.orbit-link')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); });
+    return { stageVisible: headStage.top < innerHeight / 2 && headStage.bottom <= innerHeight, awardsVisible: lastAward.bottom <= innerHeight, overlap };
+  });
+  if (!firstScreen.stageVisible || !firstScreen.awardsVisible || firstScreen.overlap) throw new Error(`Short desktop hero failed at ${size.width}x${size.height}: ${JSON.stringify(firstScreen)}`);
+  await page.screenshot({ path: `.cache/screenshots/home-${size.width}x${size.height}.png` });
+}
 console.log('Portrait loaded.');
 await page.evaluate(() => scrollTo(0, 0));
 await page.setViewportSize({ width: 390, height: 844 });

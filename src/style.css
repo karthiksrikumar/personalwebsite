@@ -52,3 +52,19 @@ body[data-page="home"] .portrait-stage{inset:250px 0 70px 0}
 body[data-page="home"] .hero-bottom{left:6%;right:6%}
 @media(max-width:1000px){body[data-page="home"] main{display:block}body[data-page="home"] .home-hero{min-height:790px;height:calc(100svh - 115px)}body[data-page="home"] .home-highlights{display:block;padding:28px 6% 32px;border-left:0;border-top:1px solid var(--line)}body[data-page="home"] .home-highlights ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}body[data-page="home"] .portrait-stage{inset:295px -4% 85px 0}}
 @media(max-width:760px){body[data-page="home"] .home-hero{height:auto;min-height:800px;max-height:none}body[data-page="home"] .hero-intro{left:6%;top:24px;max-width:88%}body[data-page="home"] .hero-intro h1{font-size:clamp(42px,11vw,57px)}body[data-page="home"] .intro-caption{font-size:14px;margin-top:14px}body[data-page="home"] .intro-sub{font-size:12px;max-width:340px}body[data-page="home"] .intro-orbit{font-size:12px;margin-top:10px;max-width:310px}body[data-page="home"] .intro-created{font-size:9px;margin-top:8px}body[data-page="home"] .portrait-stage{inset:280px -15% 95px -15%;height:auto}body[data-page="home"] .home-highlights ol{display:block}body[data-page="home"] .home-highlights li{display:grid;grid-template-columns:38px 1fr;align-items:center;padding:10px 0}body[data-page="home"] .home-highlights li::before{margin:0}body[data-page="home"] .highlights-intro h2{font-size:33px}body[data-page="home"] .home-highlights a{font-size:13px}body[data-page="home"] .home-highlights a img{width:33px;height:33px}}
+
+/* Short desktop viewports keep the portrait and all five distinctions in frame. */
+@media(min-width:1001px){
+  body[data-page="home"] .home-hero{height:calc(100svh - 100px);min-height:0;max-height:none}
+  body[data-page="home"] .hero-intro{left:clamp(30px,4vw,60px);top:50%;transform:translateY(-50%);max-width:40%}
+  body[data-page="home"] .hero-intro h1{font-size:clamp(50px,4.3vw,78px)}
+  body[data-page="home"] .portrait-stage{inset:0 0 48px 47%}
+  body[data-page="home"] .home-highlights{height:calc(100svh - 100px);padding:clamp(14px,2.2vh,25px) 22px;gap:10px;overflow:hidden}
+  body[data-page="home"] .home-highlights ol{display:flex;flex:1;min-height:0;flex-direction:column;justify-content:space-between}
+  body[data-page="home"] .home-highlights li{flex:1;min-height:0;padding:5px 0;display:flex;flex-direction:column;justify-content:center}
+  body[data-page="home"] .home-highlights li::before{margin-bottom:3px}
+  body[data-page="home"] .home-highlights a{font-size:clamp(10px,1vw,13px);line-height:1.3}
+  body[data-page="home"] .home-highlights a img{width:34px;height:34px}
+  body[data-page="home"] .highlights-intro h2{font-size:clamp(27px,3.7vh,36px);margin-top:3px}
+  body[data-page="home"] .highlights-intro .eyebrow{font-size:9px}
+}
