@@ -72,16 +72,16 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   mesh(new THREE.CylinderGeometry(1.46, 1.46, .025, 96), mat(colors.gold, .65, .32), world, [0, -1.685, 0]);
   const shadow = mesh(new THREE.PlaneGeometry(70, 70), new THREE.ShadowMaterial({ opacity: .13 }), s.scene, [0, -1.91, 0]); shadow.rotation.x = -Math.PI / 2;
   const links = [...container.querySelectorAll('.orbit-link')];
-  const types = { projects: 'projects', research: 'research', equity: 'equity', gala: 'gala', isef: 'projects', rise: 'research', citations: 'research', princeton: 'equity', scholastic: 'gala' };
+  const types = { projects: 'projects', research: 'research', equity: 'equity', gala: 'gala' };
   const orbits = links.map((link, i) => {
-    const points = Array.from({ length: 181 }, (_, k) => { const angle = k / 180 * Math.PI * 2; return new THREE.Vector3(Math.cos(angle), Math.sin(angle), 0); });
+    const points = Array.from({ length: 181 }, (_, k) => { const angle = k / 180 * Math.PI * 2; return new THREE.Vector3(Math.cos(angle), Math.sin(angle) * .35, Math.sin(angle)); });
     const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: colors.gold, transparent: true, opacity: .12 }));
     world.add(ring);
     const object = orbitObject(types[link.dataset.route]);
     object.traverse(child => { if (child.isMesh) child.castShadow = false; });
     const size = new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3());
     const normalized = new THREE.Group(); object.scale.setScalar(1 / Math.max(size.x, size.y, size.z)); normalized.add(object); world.add(normalized);
-    return { ring, object: normalized, link, phase: -Math.PI / 2 + i * Math.PI * 2 / links.length, track: 1 + (i % 3 - 1) * .025 };
+    return { ring, object: normalized, link, phase: .35 + i * Math.PI * 2 / links.length, spin: .55 + i * .17, track: 1 + (i % 3 - 1) * .045 };
   });
   let head, isPaused = reduced(), elapsed = 0, hover = false, dragging = false, previousX = 0, rotation = -.28;
   const rotationButton = container.parentElement.querySelector('[data-pause]');
@@ -100,24 +100,42 @@ export async function createPortrait(container, { onReady, onError } = {}) {
     if (!isPaused && !hover && !dragging) { elapsed += dt; rotation += dt * .095; }
     if (head) { head.rotation.y = rotation; head.scale.setScalar(innerWidth > 1000 ? 1.35 : 1); head.position.y = innerWidth > 1000 ? 1.73 : .85; }
     camera.updateMatrixWorld();
-    const center = new THREE.Vector3(0, innerWidth > 1000 ? 1.45 : .45, 0).lerp(camera.position, .3);
-    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
-    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+    const center = new THREE.Vector3(0, 1.1, 0);
     const halfHeight = camera.position.distanceTo(center) * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-    const radiusX = halfHeight * camera.aspect * (mobile ? .68 : .78);
-    const radiusY = halfHeight * .7;
+    const radiusX = halfHeight * camera.aspect * .64;
+    const radiusZ = mobile ? 2.5 : 3.2;
     const rect = container.getBoundingClientRect();
+    // Hide back-side labels conservatively before they cross the head silhouette.
+    // The WebGL depth buffer independently occludes the 3D objects and rings.
+    let headScreen = null;
+    if (head) {
+      head.updateWorldMatrix(true, false);
+      const box = head.geometry.boundingBox;
+      headScreen = { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity, depth: head.getWorldPosition(new THREE.Vector3()).applyMatrix4(camera.matrixWorldInverse).z };
+      for (const x of [box.min.x, box.max.x]) for (const y of [box.min.y, box.max.y]) for (const z of [box.min.z, box.max.z]) {
+        const corner = new THREE.Vector3(x, y, z).applyMatrix4(head.matrixWorld);
+        corner.project(camera);
+        const sx = (corner.x * .5 + .5) * rect.width, sy = (-corner.y * .5 + .5) * rect.height;
+        headScreen.left = Math.min(headScreen.left, sx); headScreen.right = Math.max(headScreen.right, sx);
+        headScreen.top = Math.min(headScreen.top, sy); headScreen.bottom = Math.max(headScreen.bottom, sy);
+      }
+    }
     for (const p of orbits) {
-      const angle = p.phase + elapsed * .045;
-      p.ring.position.copy(center); p.ring.quaternion.copy(camera.quaternion); p.ring.scale.set(radiusX * p.track, radiusY * p.track, 1);
-      p.object.position.copy(center).addScaledVector(right, Math.cos(angle) * radiusX * p.track).addScaledVector(up, Math.sin(angle) * radiusY * p.track);
-      p.object.scale.setScalar((mobile ? .65 : 1.05) * .7);
-      p.object.rotation.y = elapsed * .18;
-      p.object.getWorldPosition(projection); projection.project(camera);
-      const half = p.link.offsetWidth / 2;
-      const x = (projection.x * .5 + .5) * rect.width;
-      p.link.style.left = `${Math.max(half + 6, Math.min(rect.width - half - 6, x))}px`;
-      p.link.style.top = `${(-projection.y * .5 + .5) * rect.height}px`;
+      const angle = p.phase + elapsed * .16;
+      p.ring.position.copy(center); p.ring.scale.set(radiusX * p.track, 2, radiusZ * p.track);
+      p.object.position.set(Math.cos(angle) * radiusX * p.track, center.y + Math.sin(angle) * .7, Math.sin(angle) * radiusZ * p.track);
+      p.object.scale.setScalar(mobile ? 1 : 1.6);
+      p.object.rotation.set(.18, elapsed * p.spin, .16);
+      p.object.getWorldPosition(projection);
+      const depth = projection.clone().applyMatrix4(camera.matrixWorldInverse).z;
+      projection.project(camera);
+      const half = p.link.offsetWidth / 2, offset = mobile ? 13 : 18;
+      const x = Math.max(half + 6, Math.min(rect.width - half - 6, (projection.x * .5 + .5) * rect.width));
+      const y = Math.max(0, Math.min(rect.height - offset - p.link.offsetHeight - 6, (-projection.y * .5 + .5) * rect.height));
+      p.link.style.left = `${x}px`; p.link.style.top = `${y}px`;
+      const occluded = !!headScreen && depth < headScreen.depth && x + half > headScreen.left && x - half < headScreen.right && y + offset + p.link.offsetHeight > headScreen.top && y + offset < headScreen.bottom;
+      p.link.dataset.occluded = String(occluded);
+      p.link.setAttribute('aria-hidden', String(occluded)); p.link.tabIndex = occluded ? -1 : 0;
     }
   });
   new STLLoader().load(`${base}head.stl`, geometry => {

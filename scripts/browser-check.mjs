@@ -8,12 +8,13 @@ page.on('pageerror', e => errors.push(e.message));
 page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
 await page.goto('http://127.0.0.1:5173/', { waitUntil: 'networkidle' });
 await page.locator('.portrait-stage[data-loaded="true"]').waitFor({ timeout: 60000 });
-if (await page.locator('.orbit-link').count() !== 9) throw new Error('Home highlights are missing');
+if (await page.locator('.orbit-link').count() !== 4) throw new Error('The four section orbits are missing');
+if (await page.locator('.intro-accomplishments li').count() !== 5) throw new Error('The five accomplishments are missing');
 if (!await page.locator('.intro-sub').textContent().then(t => t.includes('pipeline to generate my head with neural networks'))) throw new Error('Head-generation line is missing');
 if (!await page.locator('.intro-orbit').textContent().then(t => t.includes('revolves around my head right now'))) throw new Error('Orbit introduction is missing');
 if (!await page.locator('.intro-created').textContent().then(t => t.includes('Created in 3D'))) throw new Error('3D portrait label is missing');
 await page.locator('[data-pause]').click();
-const desktopOverlap = await page.evaluate(() => { const copy = [...document.querySelectorAll('.hero-intro h1,.hero-intro p')].map(e => e.getBoundingClientRect()); return [...document.querySelectorAll('.orbit-link')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); }); });
+const desktopOverlap = await page.evaluate(() => { const copy = [...document.querySelectorAll('.hero-intro h1,.hero-intro p')].map(e => e.getBoundingClientRect()); return [...document.querySelectorAll('.orbit-link:not([data-occluded="true"])')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); }); });
 if (desktopOverlap) throw new Error('Hero copy overlaps orbit navigation on desktop');
 await page.screenshot({ path: '.cache/screenshots/home-desktop.png', fullPage: false });
 for (const size of [{ width: 1884, height: 770 }, { width: 1507, height: 616 }, { width: 1440, height: 650 }]) {
@@ -21,9 +22,9 @@ for (const size of [{ width: 1884, height: 770 }, { width: 1507, height: 616 }, 
   await page.waitForTimeout(250);
   const firstScreen = await page.evaluate(() => {
     const headStage = document.querySelector('.portrait-stage').getBoundingClientRect();
-    const awards = [...document.querySelectorAll('.orbit-link')].map(el => el.getBoundingClientRect());
+    const awards = [...document.querySelectorAll('.intro-accomplishments li')].map(el => el.getBoundingClientRect());
     const copy = [...document.querySelectorAll('.hero-intro h1,.hero-intro p')].map(e => e.getBoundingClientRect());
-    const overlap = [...document.querySelectorAll('.orbit-link')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); });
+    const overlap = [...document.querySelectorAll('.orbit-link:not([data-occluded="true"])')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); });
     return { stageVisible: headStage.top < innerHeight / 2 && headStage.bottom <= innerHeight, awardsVisible: awards.every(r => r.top >= 100 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth), overlap };
   });
   if (!firstScreen.stageVisible || !firstScreen.awardsVisible || firstScreen.overlap) throw new Error(`Short desktop hero failed at ${size.width}x${size.height}: ${JSON.stringify(firstScreen)}`);
@@ -33,7 +34,7 @@ console.log('Portrait loaded.');
 await page.evaluate(() => scrollTo(0, 0));
 await page.setViewportSize({ width: 390, height: 844 });
 await page.waitForTimeout(500);
-const mobileOverlap = await page.evaluate(() => { const copy = [...document.querySelectorAll('.hero-intro h1,.hero-intro p')].map(e => e.getBoundingClientRect()); return [...document.querySelectorAll('.orbit-link')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); }); });
+const mobileOverlap = await page.evaluate(() => { const copy = [...document.querySelectorAll('.hero-intro h1,.hero-intro p')].map(e => e.getBoundingClientRect()); return [...document.querySelectorAll('.orbit-link:not([data-occluded="true"])')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); }); });
 if (mobileOverlap) throw new Error('Hero copy overlaps orbit navigation on mobile');
 await page.screenshot({ path: '.cache/screenshots/home-mobile.png' });
 await page.locator('.home-hero').scrollIntoViewIfNeeded();
