@@ -7,5 +7,7 @@
   "euhr": {},
   "reasoning": {},
   "tempirl": {},
-  "we-the-corporations": {}
+  "we-the-corporations": {
+    "pdf": "papers/we-the-corporations.pdf"
+  }
 }
