@@ -1,0 +1,31 @@
+# Exported by three-d-stage
+newmtl cobalt_deep
+Kd 0.0033 0.0666 0.4564
+Ks 0.2000 0.2000 0.2000
+Ns 100
+d 1.0000
+
+newmtl gold
+Kd 0.6867 0.3663 0.0497
+Ks 0.2000 0.2000 0.2000
+Ns 136
+d 1.0000
+
+newmtl ivory
+Kd 0.9216 0.7991 0.5520
+Ks 0.2000 0.2000 0.2000
+Ns 100
+d 1.0000
+
+newmtl gold_pale
+Kd 0.8070 0.5711 0.1878
+Ks 0.2000 0.2000 0.2000
+Ns 124
+d 1.0000
+
+newmtl cobalt
+Kd 0.0048 0.1144 0.7454
+Ks 0.2000 0.2000 0.2000
+Ns 110
+d 1.0000
+
