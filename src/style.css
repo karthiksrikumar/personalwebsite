@@ -96,7 +96,7 @@ body[data-page="home"] .orbit-arrow{margin-left:auto}
 .intro-accomplishments{list-style:none;counter-reset:award;margin:16px 0 0;padding:0;pointer-events:auto}
 .intro-accomplishments li{counter-increment:award;display:flex;gap:12px;border-top:1px solid var(--line);padding:6px 0;font-size:11px;line-height:1.4}
 .intro-accomplishments li:before{content:'0' counter(award);font-size:8px;letter-spacing:1px;color:var(--mahogany);padding-top:3px}
-.intro-accomplishments a:hover,.intro-accomplishments a span{color:var(--blue)}
+.intro-accomplishments a:hover,.intro-accomplishments .highlight-stat{color:var(--blue)}
 .orbit-link[data-occluded="true"]{visibility:hidden;pointer-events:none}
 @media(min-width:1001px){
   body[data-page="home"] .hero-intro{top:clamp(14px,3vh,32px);transform:none;max-width:calc(31vw - 80px)}
@@ -105,3 +105,6 @@ body[data-page="home"] .orbit-arrow{margin-left:auto}
 }
 @media(max-width:1000px){body[data-page="home"] .home-hero{min-height:1280px}body[data-page="home"] .portrait-stage{inset:550px 0 90px}}
 @media(max-width:760px){body[data-page="home"] .home-hero{min-height:1120px}body[data-page="home"] .portrait-stage{inset:430px 0 90px}.intro-accomplishments{max-width:340px}.intro-accomplishments li{font-size:11px}}
+
+.accomplishment-with-image{display:flex;align-items:center;gap:9px}
+.accomplishment-with-image img{width:26px;height:26px;flex:none;object-fit:contain;border-radius:3px}

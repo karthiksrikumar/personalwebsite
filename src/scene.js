@@ -73,15 +73,22 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   const shadow = mesh(new THREE.PlaneGeometry(70, 70), new THREE.ShadowMaterial({ opacity: .13 }), s.scene, [0, -1.91, 0]); shadow.rotation.x = -Math.PI / 2;
   const links = [...container.querySelectorAll('.orbit-link')];
   const types = { projects: 'projects', research: 'research', equity: 'equity', gala: 'gala' };
+  const orbitProfiles = [
+    { speed: .32, track: .9, depth: .92, tilt: .95, lean: .35 },
+    { speed: .41, track: 1, depth: 1.08, tilt: -.8, lean: -.45 },
+    { speed: .36, track: .94, depth: 1, tilt: 1.25, lean: .15 },
+    { speed: .46, track: 1.06, depth: .88, tilt: -1.1, lean: .5 },
+  ];
   const orbits = links.map((link, i) => {
-    const points = Array.from({ length: 181 }, (_, k) => { const angle = k / 180 * Math.PI * 2; return new THREE.Vector3(Math.cos(angle), Math.sin(angle) * .35, Math.sin(angle)); });
+    const profile = orbitProfiles[i];
+    const points = Array.from({ length: 181 }, (_, k) => { const angle = k / 180 * Math.PI * 2; return new THREE.Vector3(Math.cos(angle), Math.sin(angle) * profile.tilt + Math.cos(angle) * profile.lean, Math.sin(angle)); });
     const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: colors.gold, transparent: true, opacity: .12 }));
     world.add(ring);
     const object = orbitObject(types[link.dataset.route]);
     object.traverse(child => { if (child.isMesh) child.castShadow = false; });
     const size = new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3());
     const normalized = new THREE.Group(); object.scale.setScalar(1 / Math.max(size.x, size.y, size.z)); normalized.add(object); world.add(normalized);
-    return { ring, object: normalized, link, phase: .35 + i * Math.PI * 2 / links.length, spin: .55 + i * .17, track: 1 + (i % 3 - 1) * .045 };
+    return { ring, object: normalized, link, phase: .35 + i * Math.PI * 2 / links.length, spin: .75 + i * .2, ...profile };
   });
   let head, isPaused = reduced(), elapsed = 0, hover = false, dragging = false, previousX = 0, rotation = -.28;
   const rotationButton = container.parentElement.querySelector('[data-pause]');
@@ -121,11 +128,11 @@ export async function createPortrait(container, { onReady, onError } = {}) {
       }
     }
     for (const p of orbits) {
-      const angle = p.phase + elapsed * .16;
-      p.ring.position.copy(center); p.ring.scale.set(radiusX * p.track, 2, radiusZ * p.track);
-      p.object.position.set(Math.cos(angle) * radiusX * p.track, center.y + Math.sin(angle) * .7, Math.sin(angle) * radiusZ * p.track);
+      const angle = p.phase + elapsed * p.speed + .14 * Math.sin(elapsed * .8 + p.phase);
+      p.ring.position.copy(center); p.ring.scale.set(radiusX * p.track, 1, radiusZ * p.depth);
+      p.object.position.set(Math.cos(angle) * radiusX * p.track, center.y + Math.sin(angle) * p.tilt + Math.cos(angle) * p.lean, Math.sin(angle) * radiusZ * p.depth);
       p.object.scale.setScalar(mobile ? 1 : 1.6);
-      p.object.rotation.set(.18, elapsed * p.spin, .16);
+      p.object.rotation.set(.18 + .1 * Math.sin(elapsed * .6 + p.phase), elapsed * p.spin, .16 + .08 * Math.sin(elapsed * .45 + p.phase));
       p.object.getWorldPosition(projection);
       const depth = projection.clone().applyMatrix4(camera.matrixWorldInverse).z;
       projection.project(camera);
