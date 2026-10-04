@@ -22,4 +22,4 @@ All sculpture geometry and material definitions are the supplied `obj/` files. T
 
 Project SVG illustrations are original typography and diagrams. The Oromo and subtraction-game images are rendered first pages of the actual PDFs. OpenReview currently returns HTTP 403 to automated PDF requests, so four publications use explicitly labeled bibliographic covers and link to the original external PDFs. They do not impersonate PDF screenshots.
 
-The owner supplied `writing/The Revolution Boutta Be Televised.pdf` for the political writing project and explicitly requested that it replace the email request. The build copies it to `public/papers/we-the-corporations.pdf`. The project uses an original designed cover.
+The owner uploaded [We the Corporations: Plutocratic Power and the Managed Fragmentation of the Public](https://github.com/karthiksrikumar/personalwebsite/blob/main/we-the-corporations.pdf) to the repository's `main` branch. The Scholastic Gold Medal project and homepage distinction link directly to that document. The project uses an original designed cover.

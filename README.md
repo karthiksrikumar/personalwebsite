@@ -28,17 +28,17 @@ Upload images through GitHub's **Add file → Upload files** into the appropriat
 | `babyvlm` | BabyVLM project |
 | `safenet` | SafeNet AI project |
 | `machina-mundi` | Machina Mundi section |
-| `convoaave` | ConvoAAVE section |
-| `student-ai` | Student AI Council section |
+| `convoaave` | Reserved; not displayed in the current equity page |
+| `student-ai` | Reserved for future Student AI Squad materials |
 | `gala` | Below the sculpture catalogue |
 
-Commit the upload to `main`. The website reads the public repository's photo folders when it opens, so new photographs appear without a rebuild. If GitHub is temporarily unavailable or rate limited, it uses the last bundled gallery. JPG, PNG, WebP, AVIF, and GIF are supported. Empty folders produce no empty boxes. Files sort alphabetically, so use names such as `01-Classroom-workshop.jpg`; the filename becomes the accessible caption. Resize photographs to roughly 1800 pixels wide for faster loading. For local changes, restart `npm run dev` after adding photos.
+Commit the upload to `main`. The website reads the public repository's photo folders when it opens, so new photographs appear without a rebuild. On the equity page, only Machina Mundi photographs appear; ConvoAAVE and Student AI Squad currently use text-only panels. If GitHub is temporarily unavailable or rate limited, the site uses the last bundled gallery. JPG, PNG, WebP, AVIF, and GIF are supported. Empty folders produce no empty boxes. Files sort alphabetically, so use names such as `01-Classroom-workshop.jpg`; the filename becomes the accessible caption. Resize photographs to roughly 1800 pixels wide for faster loading. For local changes, restart `npm run dev` after adding photos.
 
 ## Content and art
 
 - Edit `src/data.js` for project descriptions, publication records, and sculpture labels.
 - Edit `src/main.js` for biography and community copy.
-- The political essay source is `writing/The Revolution Boutta Be Televised.pdf`. The build publishes a copy as `papers/we-the-corporations.pdf`; its designed project cover remains in `public/previews/we-the-corporations.svg`.
+- The Scholastic Gold Medal project links directly to `we-the-corporations.pdf` on the repository's `main` branch. Its designed project cover remains in `public/previews/we-the-corporations.svg`.
 - The palette is defined in `src/style.css` and `src/scene.js`: `#0075F2`, `#51D6FF`, `#C5A059`, `#1F2421`, `#5C2C23`.
 - Original models stay in `obj/`. `prepare-assets.mjs` copies the head and all OBJ/MTL pairs into the public build. Generated copies are ignored by Git.
 - The homepage loads the original STL with Three.js STLLoader. The sculpture room uses OBJLoader and MTLLoader, batching material groups to keep rendering efficient.

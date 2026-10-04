@@ -31,10 +31,10 @@ function home() {
       <a class="orbit-link orbit-equity" data-route="equity" href="#/equity"><span class="orbit-number">03</span><span>Equity &<br>representation</span><span class="orbit-arrow">↗</span></a>
       <a class="orbit-link orbit-gala" data-route="gala" href="#/gala"><span class="orbit-number">04</span><span>Sculpture gala</span><span class="orbit-arrow">↗</span></a>
     </div>
-    <aside class="portrait-note" aria-label="Selected distinctions"><p class="highlights-label">Selected distinctions</p><ul><li><img src="${asset('media/isef-logo.png')}" alt="2025 Regeneron ISEF logo"><span>International Science and Engineering Fair Finalist, 2025</span></li><li>Boston University RISE Internship <span class="highlight-stat">(2.2%)</span></li><li>NeurIPS paper cited by Georgia Tech and Samsung</li><li>Princeton Prize in Race Relations Regional Finalist</li><li>Scholastic Gold Medal</li></ul></aside>
     <div class="hero-bottom"><p>Senior at South Windsor High School<br><span>Connecticut, USA</span></p><div class="scene-tools"><span class="drag-hint">Drag to turn my head</span><button data-pause aria-pressed="false">Ⅱ Pause motion</button><button data-reset aria-label="Reset portrait rotation">↺</button></div><a href="#selected" class="scroll-link">A closer look <span>↓</span></a></div>
   </section>
-  <section class="home-index" id="selected"><div class="index-intro"><span class="eyebrow">Away from the orbit</span><h2>A few things<br>I’m working on.</h2><p>Machine learning, public life, and things made to be looked at from more than one angle.</p></div><div class="index-links"><a href="#/research"><span>Research & publications</span><p>Distillation, language, and the limits of reasoning.</p><span class="index-arrow">↗</span></a><a href="#/projects"><span>Projects</span><p>From ternary networks to political writing.</p><span class="index-arrow">↗</span></a><a href="#/equity"><span>Equity & representation</span><p>AI education and language representation in Hartford.</p><span class="index-arrow">↗</span></a><a href="#/gala"><span>Sculpture gala</span><p>Seven objects. A small room. A different perspective.</p><span class="index-arrow">↗</span></a></div></section>`;
+  <section class="home-highlights" id="selected" aria-label="Selected distinctions"><div class="highlights-intro"><p class="eyebrow">Selected distinctions</p><h2>Along the way.</h2></div><ol><li><a href="#/projects"><img src="${asset('media/isef-logo.png')}" alt="2025 Regeneron ISEF logo"><span>International Science and Engineering Fair Finalist, 2025</span></a></li><li><a href="#/projects">Boston University RISE Internship <span class="highlight-stat">(2.2%)</span></a></li><li><a href="#/research">NeurIPS paper cited by Georgia Tech and Samsung</a></li><li><a href="#/equity">Princeton Prize in Race Relations Regional Finalist</a></li><li><a href="https://github.com/karthiksrikumar/personalwebsite/blob/main/we-the-corporations.pdf" target="_blank" rel="noopener noreferrer">Scholastic Gold Medal <span aria-hidden="true">↗</span></a></li></ol></section>
+  <section class="home-index"><div class="index-intro"><span class="eyebrow">Away from the orbit</span><h2>A few things<br>I’m working on.</h2><p>Machine learning, public life, and things made to be looked at from more than one angle.</p></div><div class="index-links"><a href="#/research"><span>Research & publications</span><p>Distillation, language, and the limits of reasoning.</p><span class="index-arrow">↗</span></a><a href="#/projects"><span>Projects</span><p>From ternary networks to political writing.</p><span class="index-arrow">↗</span></a><a href="#/equity"><span>Equity & representation</span><p>AI education and language representation in Hartford.</p><span class="index-arrow">↗</span></a><a href="#/gala"><span>Sculpture gala</span><p>Seven objects. A small room. A different perspective.</p><span class="index-arrow">↗</span></a></div></section>`;
   const current = generation;
   import('./scene.js').then(async ({ createPortrait }) => {
     if (current !== generation) return;
@@ -80,9 +80,9 @@ function equityPage() {
   const stories = [
     { title: 'Machina Mundi', claim: 'AI education begins with access.', body: 'Machina Mundi brings hands-on AI programs to Hartford, East Hartford, Manchester, and South Windsor. Students test models and ask whose experiences those systems represent. The work reaches into dialect research and education policy with local partners and elected officials.', links: [['Visit Machina Mundi', 'https://machinamundi.vercel.app'], ['Source & projects', 'https://github.com/karthiksrikumar/MachinaMundiWebsite']] },
     { title: 'ConvoAAVE', claim: 'Speech should not have to change to be understood.', body: 'Developed with community partners in Hartford and East Hartford, this African American Vernacular English corpus preserves the grammar of more than 80,000 transcribed words. Written transcripts are public; contributor recordings remain restricted. Princeton Prize in Race Relations regional finalist, 2026.', links: [['Explore the corpus', 'https://github.com/karthiksrikumar/ConvoAAVE-POLLEN'], ['Project & methodology', 'https://machinamundi.vercel.app/convoaave']] },
-    { title: 'Student AI Council', claim: 'Students belong in decisions about classroom AI.', body: 'As a South Windsor Student AI Squad co-lead, I work with educators and speak at Board of Education meetings. My videos helped introduce AI tools to 900 students; by March 2025, student use reached 2,400. I also helped educators build tools used in 72% of district classrooms and joined an AI in Education panel for New England educators.', links: [['South Windsor Public Schools', 'https://www.southwindsorschools.org/']] },
+    { title: 'Student AI Squad', claim: 'Students belong in decisions about classroom AI.', body: 'As a South Windsor Student AI Squad co-lead, I work with educators and speak at Board of Education meetings. My videos helped introduce AI tools to 900 students; by March 2025, student use reached 2,400. I also helped educators build tools used in 72% of district classrooms and joined an AI in Education panel for New England educators.', links: [['South Windsor Public Schools', 'https://www.southwindsorschools.org/']] },
   ];
-  const slides = [...(photos['machina-mundi'] || []), ...(photos.convoaave || []), ...(photos['student-ai'] || [])];
+  const slides = [...(photos['machina-mundi'] || [])];
   const fallback = { src: 'media/machina-mundi-logo.png', alt: 'Machina Mundi emblem' };
   if (!slides.length) slides.push(fallback);
   main.innerHTML = `<section class="equity-screen" aria-labelledby="equity-title"><div class="equity-head"><p class="eyebrow">Equity & representation</p><h1 id="equity-title">Who gets a seat at the table?</h1><p>Three ways to make AI more accountable to the people it serves.</p></div><div class="equity-tabs" role="tablist" aria-label="Equity projects">${stories.map((s, i) => `<button role="tab" id="equity-tab-${i}" aria-controls="equity-panel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-equity-tab="${i}"><span>0${i + 1}</span>${s.title}</button>`).join('')}</div><div class="equity-feature"><article class="equity-story" id="equity-panel" role="tabpanel" aria-labelledby="equity-tab-0" tabindex="0"></article><div class="equity-media"><button class="equity-photo" data-photo="" data-caption="" aria-label="Open photograph">${image(slides[0].src, slides[0].alt, 'equity-photo-image')}<span class="equity-photo-open">View photograph ↗</span></button><div class="equity-media-bar"><p class="equity-photo-caption"></p><div class="equity-reel-controls"><button data-slide-prev aria-label="Previous photograph">←</button><span class="equity-slide-count"></span><button data-slide-next aria-label="Next photograph">→</button><button data-slide-pause aria-label="Pause image rotation" aria-pressed="false">Ⅱ</button></div></div></div></div></section>`;
@@ -90,13 +90,18 @@ function equityPage() {
   const panel = main.querySelector('#equity-panel');
   const tabs = [...main.querySelectorAll('[data-equity-tab]')];
   const photoButton = main.querySelector('.equity-photo');
+  const media = main.querySelector('.equity-media');
+  const feature = main.querySelector('.equity-feature');
   const pauseButton = main.querySelector('[data-slide-pause]');
   function showStory(index) {
     selected = index;
     const story = stories[index];
     panel.innerHTML = `<p class="eyebrow">0${index + 1} / 03</p><h2>${story.title}</h2><p class="equity-thesis">${story.claim}</p><p class="equity-body">${story.body}</p><div class="link-row">${story.links.map(l => external(...l)).join('')}</div>`;
     panel.setAttribute('aria-labelledby', `equity-tab-${index}`);
+    media.hidden = index !== 0;
+    feature.classList.toggle('text-only', index !== 0);
     tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; });
+    startRotation();
   }
   function showSlide(index) {
     slide = (index + slides.length) % slides.length;
@@ -107,7 +112,7 @@ function equityPage() {
     main.querySelector('.equity-photo-caption').textContent = current.alt;
     main.querySelector('.equity-slide-count').textContent = `${String(slide + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
   }
-  function startRotation() { clearInterval(timer); if (!paused && slides.length > 1) timer = setInterval(() => showSlide(slide + 1), 5000); }
+  function startRotation() { clearInterval(timer); if (!paused && selected === 0 && slides.length > 1) timer = setInterval(() => showSlide(slide + 1), 5000); }
   tabs.forEach((tab, i) => { tab.onclick = () => { equityInteracted = true; showStory(i); }; tab.onkeydown = e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); equityInteracted = true; const next = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length; showStory(next); tabs[next].focus(); } }; });
   main.querySelector('[data-slide-prev]').onclick = () => { equityInteracted = true; showSlide(slide - 1); startRotation(); };
   main.querySelector('[data-slide-next]').onclick = () => { equityInteracted = true; showSlide(slide + 1); startRotation(); };
@@ -168,6 +173,5 @@ async function refreshPhotos() {
 try {
   const response = await fetch(`${base}content-manifest.json`), content = await response.json();
   for (const p of papers) { if (content[p.id]?.pdf) p.pdf = content[p.id].pdf; if (content[p.id]?.preview) { p.preview = content[p.id].preview; p.actualPreview = true; } }
-  if (content['we-the-corporations']?.pdf) projects[1].links = [['Read the essay', content['we-the-corporations'].pdf]];
 } catch { /* Verified external sources remain available. */ }
 window.addEventListener('hashchange', route); route(); refreshPhotos();
