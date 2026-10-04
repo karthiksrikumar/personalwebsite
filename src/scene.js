@@ -66,7 +66,7 @@ function orbitObject(type) {
 export async function createPortrait(container, { onReady, onError } = {}) {
   let s;
   try { s = studio(container); } catch (error) { onError?.(error); return { dispose() {} }; }
-  const camera = new THREE.PerspectiveCamera(36, 1, .1, 80); camera.position.set(0, 4.4, 13); camera.lookAt(0, .15, 0); s.setCamera(camera);
+  const camera = new THREE.PerspectiveCamera(36, 1, .1, 80); camera.position.set(0, 4.4, 15); camera.lookAt(0, .45, 0); s.setCamera(camera);
   const world = new THREE.Group(); s.scene.add(world);
   mesh(new THREE.CylinderGeometry(1.44, 1.5, .18, 96), mat('#e1dace', .05, .75), world, [0, -1.8, 0]);
   mesh(new THREE.CylinderGeometry(1.46, 1.46, .025, 96), mat(colors.gold, .65, .32), world, [0, -1.685, 0]);
@@ -98,7 +98,7 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   s.loop((t, dt) => {
     const mobile = container.clientWidth < 650;
     world.scale.setScalar(1);
-    camera.position.z = mobile ? 12.4 : 12.8; camera.lookAt(0, .65, 0);
+    camera.position.z = mobile ? 14.8 : 15; camera.lookAt(0, .45, 0);
     if (!isPaused && !hover && !dragging) { elapsed += dt; rotation += dt * .095; }
     if (head) head.rotation.y = rotation;
     for (const p of orbits) {
@@ -218,7 +218,6 @@ export async function createGallery(container, sculptures, onSelect) {
         const group = await loadSculpture(sculptures[i].id);
         if (s.disposed) { group.traverse(o => o.geometry?.dispose()); break; }
         group.position.set(...positions[i]); group.position.y = heights[i] - .065; group.userData.index = i; s.scene.add(group); groups.push(group); loaded++;
-        if (narrow && i === 0) select(0);
         container.querySelector('.scene-status').textContent = loaded === 7 ? '' : `Placing sculptures · ${loaded} of 7`;
         container.dataset.loaded = String(loaded);
       } catch { container.querySelector('.scene-status').textContent = `Could not load ${sculptures[i].title}. The other pieces remain available.`; }
