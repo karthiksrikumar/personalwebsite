@@ -76,18 +76,9 @@ body[data-page="home"] .hero-bottom{left:6%;right:6%}
 
 /* Distinctions join the portrait's orbit; the scene spans the open right side. */
 body[data-page="home"] main{display:block}
-.distinction-orbit{display:flex;flex-direction:column;gap:7px;width:195px;white-space:normal;line-height:1.4;padding:13px 15px;background:rgba(243,240,232,.9);border:1px solid rgba(197,160,89,.4);border-radius:2px;box-shadow:0 8px 28px #1f242109;transform:translate(-50%,calc(-50% + var(--drift,0px)));font-size:13px;backdrop-filter:blur(8px)}
-.distinction-orbit .orbit-number{font-size:8px;letter-spacing:1.6px;color:var(--mahogany);padding:0}
-.distinction-orbit em{font-style:normal;color:var(--blue)}
-.distinction-orbit img{position:absolute;right:12px;top:12px;width:29px;height:29px;object-fit:contain}
-.distinction-isef .orbit-number{padding-right:30px;min-height:29px}
-.distinction-isef{left:17%;top:24%}
-.distinction-rise{left:83%;top:22%}
-.distinction-paper{left:14%;top:65%}
-.distinction-princeton{left:86%;top:64%}
-.distinction-scholastic{left:51%;top:91%;width:210px;text-align:center;align-items:center}
-.portrait-stage:before,.portrait-stage:after{content:'';position:absolute;inset:15% 8% 12%;border:1px solid #c5a05955;border-radius:50%;transform:rotate(-16deg);pointer-events:none;z-index:0}
-.portrait-stage:after{inset:21% 4% 18%;transform:rotate(14deg);border-color:#c5a05930}
+body[data-page="home"] .orbit-link{display:flex;align-items:center;gap:7px;width:168px;min-height:40px;white-space:normal;font-size:12px;line-height:1.25;padding:7px 8px;transform:translate(-50%,18px);background:rgba(243,240,232,.88);border:0;border-bottom:1px solid #c5a05955;box-shadow:none}
+body[data-page="home"] .orbit-number{font-size:8px;padding:0}
+body[data-page="home"] .orbit-arrow{margin-left:auto}
 @media(min-width:1001px){
   body[data-page="home"] .hero-intro{max-width:min(38%,430px)}
   body[data-page="home"] .portrait-stage{inset:0 0 55px 31%}
@@ -99,12 +90,5 @@ body[data-page="home"] main{display:block}
 @media(max-width:760px){
   body[data-page="home"] .home-hero{min-height:960px}
   body[data-page="home"] .portrait-stage{inset:280px 0 90px}
-  .distinction-orbit{width:135px;font-size:10px;padding:9px;gap:5px}
-  .distinction-orbit .orbit-number{font-size:7px;letter-spacing:.8px}
-  .distinction-orbit img{width:22px;height:22px;right:7px;top:7px}
-  .distinction-isef{left:20%;top:19%}
-  .distinction-rise{left:80%;top:18%}
-  .distinction-paper{left:20%;top:70%}
-  .distinction-princeton{left:80%;top:69%}
-  .distinction-scholastic{left:50%;top:91%;width:180px}
+  body[data-page="home"] .orbit-link{width:90px;font-size:9px;gap:4px;padding:5px;min-height:33px;transform:translate(-50%,13px)}
 }

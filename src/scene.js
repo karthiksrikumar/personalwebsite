@@ -72,19 +72,16 @@ export async function createPortrait(container, { onReady, onError } = {}) {
   mesh(new THREE.CylinderGeometry(1.46, 1.46, .025, 96), mat(colors.gold, .65, .32), world, [0, -1.685, 0]);
   const shadow = mesh(new THREE.PlaneGeometry(70, 70), new THREE.ShadowMaterial({ opacity: .13 }), s.scene, [0, -1.91, 0]); shadow.rotation.x = -Math.PI / 2;
   const links = [...container.querySelectorAll('.orbit-link')];
-  const paths = [
-    { route: 'projects', a: 4.5, b: 2.4, phase: 3.7, tilt: .55 },
-    { route: 'rise', a: 4.8, b: 2.8, phase: 4.9, tilt: .7 },
-    { route: 'research', a: 4.5, b: 2.4, phase: 5.65, tilt: -.55 },
-    { route: 'equity', a: 5.1, b: 3.2, phase: 2.45, tilt: -.3 },
-    { route: 'gala', a: 5, b: 3.2, phase: .6, tilt: .5 },
-  ];
-  const orbits = paths.map((p, i) => {
-    const points = Array.from({ length: 181 }, (_, k) => { const t = k / 180 * Math.PI * 2; return new THREE.Vector3(Math.cos(t) * p.a, Math.sin(t) * p.tilt, Math.sin(t) * p.b); });
-    const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: i % 2 ? '#b4b7ad' : colors.gold, transparent: true, opacity: .4 }));
-    ring.position.y = -.3; world.add(ring);
-    const object = orbitObject(p.route === 'rise' ? 'research' : p.route); world.add(object);
-    return { ...p, ring, object, link: links.find(l => l.dataset.route === p.route) };
+  const types = { projects: 'projects', research: 'research', equity: 'equity', gala: 'gala', isef: 'projects', rise: 'research', citations: 'research', princeton: 'equity', scholastic: 'gala' };
+  const orbits = links.map((link, i) => {
+    const points = Array.from({ length: 181 }, (_, k) => { const angle = k / 180 * Math.PI * 2; return new THREE.Vector3(Math.cos(angle), Math.sin(angle), 0); });
+    const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: colors.gold, transparent: true, opacity: .12 }));
+    world.add(ring);
+    const object = orbitObject(types[link.dataset.route]);
+    object.traverse(child => { if (child.isMesh) child.castShadow = false; });
+    const size = new THREE.Box3().setFromObject(object).getSize(new THREE.Vector3());
+    const normalized = new THREE.Group(); object.scale.setScalar(1 / Math.max(size.x, size.y, size.z)); normalized.add(object); world.add(normalized);
+    return { ring, object: normalized, link, phase: -Math.PI / 2 + i * Math.PI * 2 / links.length, track: 1 + (i % 3 - 1) * .025 };
   });
   let head, isPaused = reduced(), elapsed = 0, hover = false, dragging = false, previousX = 0, rotation = -.28;
   const rotationButton = container.parentElement.querySelector('[data-pause]');
@@ -102,26 +99,25 @@ export async function createPortrait(container, { onReady, onError } = {}) {
     camera.position.z = mobile ? 14.8 : innerWidth > 1000 ? 11.8 : 13.2; camera.lookAt(0, innerWidth > 1000 ? 1.45 : .45, 0);
     if (!isPaused && !hover && !dragging) { elapsed += dt; rotation += dt * .095; }
     if (head) { head.rotation.y = rotation; head.scale.setScalar(innerWidth > 1000 ? 1.35 : 1); head.position.y = innerWidth > 1000 ? 1.73 : .85; }
-    const orbitWidth = Math.min(1, container.clientWidth / container.clientHeight);
+    camera.updateMatrixWorld();
+    const center = new THREE.Vector3(0, innerWidth > 1000 ? 1.45 : .45, 0).lerp(camera.position, .3);
+    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+    const halfHeight = camera.position.distanceTo(center) * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const radiusX = halfHeight * camera.aspect * (mobile ? .68 : .78);
+    const radiusY = halfHeight * .7;
+    const rect = container.getBoundingClientRect();
     for (const p of orbits) {
-      const angle = p.phase + elapsed * .027;
-      p.ring.scale.x = mobile ? 1 : orbitWidth;
-      p.object.position.set(Math.cos(angle) * p.a * (mobile ? .65 : orbitWidth), Math.sin(angle) * p.tilt + .25, Math.sin(angle) * p.b * (mobile ? 1.12 : 1));
-      p.object.scale.setScalar(mobile ? .87 : 1.28);
+      const angle = p.phase + elapsed * .045;
+      p.ring.position.copy(center); p.ring.quaternion.copy(camera.quaternion); p.ring.scale.set(radiusX * p.track, radiusY * p.track, 1);
+      p.object.position.copy(center).addScaledVector(right, Math.cos(angle) * radiusX * p.track).addScaledVector(up, Math.sin(angle) * radiusY * p.track);
+      p.object.scale.setScalar((mobile ? .65 : 1.05) * .7);
       p.object.rotation.y = elapsed * .18;
-      p.object.updateWorldMatrix(true, false); p.object.getWorldPosition(projection); projection.project(camera);
-      if (p.link) {
-        if (p.link.classList.contains('distinction-orbit')) {
-          p.link.style.setProperty('--drift', `${Math.sin(elapsed * .65 + p.phase) * 7}px`);
-          continue;
-        }
-        const rect = container.getBoundingClientRect(), half = p.link.offsetWidth / 2;
-        const x = (projection.x * .5 + .5) * rect.width;
-        const minX = Math.max(half + 12, half + 12 - rect.left);
-        const maxX = Math.min(rect.width - half - 12, innerWidth - rect.left - half - 12);
-        p.link.style.left = `${Math.max(minX, Math.min(maxX, x))}px`;
-        p.link.style.top = `${(-projection.y * .5 + .5) * 100}%`;
-      }
+      p.object.getWorldPosition(projection); projection.project(camera);
+      const half = p.link.offsetWidth / 2;
+      const x = (projection.x * .5 + .5) * rect.width;
+      p.link.style.left = `${Math.max(half + 6, Math.min(rect.width - half - 6, x))}px`;
+      p.link.style.top = `${(-projection.y * .5 + .5) * rect.height}px`;
     }
   });
   new STLLoader().load(`${base}head.stl`, geometry => {

@@ -8,7 +8,7 @@ page.on('pageerror', e => errors.push(e.message));
 page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
 await page.goto('http://127.0.0.1:5173/', { waitUntil: 'networkidle' });
 await page.locator('.portrait-stage[data-loaded="true"]').waitFor({ timeout: 60000 });
-if (await page.locator('.distinction-orbit').count() !== 5) throw new Error('Home highlights are missing');
+if (await page.locator('.orbit-link').count() !== 9) throw new Error('Home highlights are missing');
 if (!await page.locator('.intro-sub').textContent().then(t => t.includes('pipeline to generate my head with neural networks'))) throw new Error('Head-generation line is missing');
 if (!await page.locator('.intro-orbit').textContent().then(t => t.includes('revolves around my head right now'))) throw new Error('Orbit introduction is missing');
 if (!await page.locator('.intro-created').textContent().then(t => t.includes('Created in 3D'))) throw new Error('3D portrait label is missing');
@@ -21,7 +21,7 @@ for (const size of [{ width: 1884, height: 770 }, { width: 1507, height: 616 }, 
   await page.waitForTimeout(250);
   const firstScreen = await page.evaluate(() => {
     const headStage = document.querySelector('.portrait-stage').getBoundingClientRect();
-    const awards = [...document.querySelectorAll('.distinction-orbit')].map(el => el.getBoundingClientRect());
+    const awards = [...document.querySelectorAll('.orbit-link')].map(el => el.getBoundingClientRect());
     const copy = [...document.querySelectorAll('.hero-intro h1,.hero-intro p')].map(e => e.getBoundingClientRect());
     const overlap = [...document.querySelectorAll('.orbit-link')].some(e => { const r = e.getBoundingClientRect(); return copy.some(c => r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top); });
     return { stageVisible: headStage.top < innerHeight / 2 && headStage.bottom <= innerHeight, awardsVisible: awards.every(r => r.top >= 100 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth), overlap };
