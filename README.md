@@ -38,6 +38,7 @@ Commit the upload to `main`. The website reads the public repository's photo fol
 
 - Edit `src/data.js` for project descriptions, publication records, and sculpture labels.
 - Edit `src/main.js` for biography and community copy.
+- The political essay source is `writing/The Revolution Boutta Be Televised.pdf`. The build publishes a copy as `papers/we-the-corporations.pdf`; its designed project cover remains in `public/previews/we-the-corporations.svg`.
 - The palette is defined in `src/style.css` and `src/scene.js`: `#0075F2`, `#51D6FF`, `#C5A059`, `#1F2421`, `#5C2C23`.
 - Original models stay in `obj/`. `prepare-assets.mjs` copies the head and all OBJ/MTL pairs into the public build. Generated copies are ignored by Git.
 - The homepage loads the original STL with Three.js STLLoader. The sculpture room uses OBJLoader and MTLLoader, batching material groups to keep rendering efficient.

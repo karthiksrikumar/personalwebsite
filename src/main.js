@@ -5,7 +5,7 @@ const main = document.querySelector('main');
 const dialog = document.querySelector('#detail-dialog');
 const dialogContent = document.querySelector('#dialog-content');
 const base = import.meta.env.BASE_URL;
-let scene, cleanup = () => {}, generation = 0, photos = {};
+let scene, cleanup = () => {}, generation = 0, photos = {}, equityInteracted = false;
 const asset = url => /^(https?:|mailto:)/.test(url) ? url : `${base}${url}`;
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const external = (label, url) => `<a class="text-link" href="${esc(asset(url))}" target="_blank" rel="noopener noreferrer">${esc(label)} <span aria-hidden="true">↗</span></a>`;
@@ -23,7 +23,7 @@ dialog.addEventListener('close', () => document.body.classList.remove('modal-ope
 
 function home() {
   main.innerHTML = `<section class="home-hero" aria-labelledby="home-title">
-    <div class="hero-intro"><p class="eyebrow">A personal collection</p><h1 id="home-title">Hi, I’m <br><span>Karthik Srikumar.</span></h1><p class="intro-caption">This is my head in 3D.</p><p class="intro-sub">Here are some things<br>that revolve around me.</p></div>
+    <div class="hero-intro"><p class="eyebrow">A personal collection</p><h1 id="home-title">Hi, I’m <br><span>Karthik Srikumar.</span></h1><p class="intro-caption">I’m a senior at South Windsor High School.</p><p class="intro-sub">Research, public life, and sculpture<br>revolve around me here.</p></div>
     <div class="portrait-stage" aria-label="Interactive 3D portrait of Karthik, surrounded by links to his work">
       <div class="scene-status" role="status">Setting the portrait in place…</div>
       <a class="orbit-link orbit-projects" data-route="projects" href="#/projects"><span class="orbit-number">01</span><span>Projects</span><span class="orbit-arrow">↗</span></a>
@@ -31,7 +31,7 @@ function home() {
       <a class="orbit-link orbit-equity" data-route="equity" href="#/equity"><span class="orbit-number">03</span><span>Equity &<br>representation</span><span class="orbit-arrow">↗</span></a>
       <a class="orbit-link orbit-gala" data-route="gala" href="#/gala"><span class="orbit-number">04</span><span>Sculpture gala</span><span class="orbit-arrow">↗</span></a>
     </div>
-    <div class="portrait-note"><span class="tiny-star">✳</span><p>An actual scan.<br>A slightly unusual introduction.</p></div>
+    <aside class="portrait-note" aria-label="Selected distinctions"><p class="highlights-label">Selected distinctions</p><ul><li><img src="${asset('media/isef-logo.png')}" alt="2025 Regeneron ISEF logo"><span>International Science and Engineering Fair Finalist, 2025</span></li><li>Boston University RISE Internship <span class="highlight-stat">(2.2%)</span></li><li>NeurIPS paper cited by Georgia Tech and Samsung</li><li>Princeton Prize in Race Relations Regional Finalist</li><li>Scholastic Gold Medal</li></ul></aside>
     <div class="hero-bottom"><p>Senior at South Windsor High School<br><span>Connecticut, USA</span></p><div class="scene-tools"><span class="drag-hint">Drag to turn my head</span><button data-pause aria-pressed="false">Ⅱ Pause motion</button><button data-reset aria-label="Reset portrait rotation">↺</button></div><a href="#selected" class="scroll-link">A closer look <span>↓</span></a></div>
   </section>
   <section class="home-index" id="selected"><div class="index-intro"><span class="eyebrow">Away from the orbit</span><h2>A few things<br>I’m working on.</h2><p>Machine learning, public life, and things made to be looked at from more than one angle.</p></div><div class="index-links"><a href="#/research"><span>Research & publications</span><p>Distillation, language, and the limits of reasoning.</p><span class="index-arrow">↗</span></a><a href="#/projects"><span>Projects</span><p>From ternary networks to political writing.</p><span class="index-arrow">↗</span></a><a href="#/equity"><span>Equity & representation</span><p>AI education and language representation in Hartford.</p><span class="index-arrow">↗</span></a><a href="#/gala"><span>Sculpture gala</span><p>Seven objects. A small room. A different perspective.</p><span class="index-arrow">↗</span></a></div></section>`;
@@ -46,7 +46,7 @@ function home() {
 }
 
 function projectDetail(project) {
-  dialogContent.innerHTML = `<div class="project-detail"><div class="detail-visual">${image(project.image, project.title)}</div><div class="detail-copy"><p class="eyebrow">${project.type}</p><h2 id="dialog-title">${project.title}</h2><p class="detail-subtitle">${project.subtitle}</p><p>${project.description}</p>${project.awards ? `<ul class="awards">${project.awards.map(a => `<li>${a}</li>`).join('')}</ul>` : ''}<div class="link-row">${project.links.map(l => external(...l)).join('')}</div>${gallery(project.id)}</div></div>`;
+  dialogContent.innerHTML = `<div class="project-detail"><div class="detail-visual">${project.id === 'oatnet' ? `<div class="isef-visual">${image('media/oatnet-isef-project.jpg', 'Karthik Srikumar, portrait from his ISEF OATNet project page')}${image('media/isef-logo.png', '2025 Regeneron ISEF logo', 'isef-detail-logo')}</div>` : image(project.image, project.title)}</div><div class="detail-copy"><p class="eyebrow">${project.type}</p><h2 id="dialog-title">${project.title}</h2><p class="detail-subtitle">${project.subtitle}</p><p>${project.description}</p>${project.awards ? `<ul class="awards">${project.awards.map(a => `<li>${a}</li>`).join('')}</ul>` : ''}<div class="link-row">${project.links.map(l => external(...l)).join('')}</div>${gallery(project.id)}</div></div>`;
   dialog.showModal(); document.body.classList.add('modal-open');
   dialog.querySelectorAll('[data-photo]').forEach(b => b.onclick = () => { dialogContent.innerHTML = `<h2 id="dialog-title" class="photo-caption">${esc(b.dataset.caption)}</h2>${image(b.dataset.photo, b.dataset.caption, 'full-photo')}`; });
 }
@@ -76,11 +76,45 @@ function bindCitations() {
 }
 
 function equityPage() {
-  main.innerHTML = `<div class="page-wrap equity-wrap"><header class="page-heading"><p class="eyebrow">Equity & representation</p><h1>Who gets a seat<br>at the table?</h1><p>Work on access to AI education, dialect representation, and student voices in the classroom.</p></header>
-  <section class="equity-section"><div class="equity-label"><span>01</span><img class="mm-logo" src="${asset('media/machina-mundi-logo.png')}" alt="Machina Mundi logo"></div><div class="equity-copy"><h2>Machina Mundi</h2><p class="large-copy">AI education begins with access.</p><p>Machina Mundi runs hands-on AI programs in Greater Hartford, including Hartford, East Hartford, Manchester, and South Windsor. Students work with models, examine how chatbots respond, and discuss whose experiences those systems represent.</p><p>The work extends beyond the classroom into dialect research and education policy, including conversations with local partners and elected officials.</p><div class="link-row">${external('Visit Machina Mundi', 'https://machinamundi.vercel.app')}${external('Source & projects', 'https://github.com/karthiksrikumar/MachinaMundiWebsite')}</div>${gallery('machina-mundi')}</div></section>
-  <section class="equity-section"><div class="equity-label"><span>02</span></div><div class="equity-copy"><h2>ConvoAAVE</h2><p class="large-copy">Speech should not have to change to be understood.</p><p>ConvoAAVE is an African American Vernacular English speech corpus developed with community partners in Hartford and East Hartford. More than 80,000 words of transcript preserve the grammar of the original speech, rather than rewriting it into Standard English.</p><p>The project releases written transcripts. Voice recordings remain restricted to protect the people who contributed them.</p><p class="recognition">Princeton Prize in Race Relations, regional finalist, 2026.</p><div class="link-row">${external('Explore the corpus', 'https://github.com/karthiksrikumar/ConvoAAVE-POLLEN')}${external('Project & methodology', 'https://machinamundi.vercel.app/convoaave')}</div>${gallery('convoaave')}</div></section>
-  <section class="equity-section"><div class="equity-label"><span>03</span></div><div class="equity-copy"><h2>Students in the AI conversation</h2><p class="large-copy">South Windsor High School Student AI Council</p><p>As a Student AI Squad co-lead, I work with educators on ethical AI use in K–12 classrooms and speak at Board of Education meetings about students’ experiences with these tools.</p><p>I created video resources that helped introduce AI tools to 900 students within the first few months. By March 2025, student use reached 2,400. I also helped educators develop tools used in 72% of classrooms across the district.</p><p>I was one of two district students selected for the “AI in Education” panel for New England educators, and was invited to return for the October 2026 conference. The South Windsor superintendent also recognized this work in the district newsletter.</p><div class="link-row">${external('South Windsor Public Schools', 'https://www.southwindsorschools.org/')}</div>${gallery('student-ai')}</div></section></div>`;
-  bindPhotos();
+  cleanup();
+  const stories = [
+    { title: 'Machina Mundi', claim: 'AI education begins with access.', body: 'Machina Mundi brings hands-on AI programs to Hartford, East Hartford, Manchester, and South Windsor. Students test models and ask whose experiences those systems represent. The work reaches into dialect research and education policy with local partners and elected officials.', links: [['Visit Machina Mundi', 'https://machinamundi.vercel.app'], ['Source & projects', 'https://github.com/karthiksrikumar/MachinaMundiWebsite']] },
+    { title: 'ConvoAAVE', claim: 'Speech should not have to change to be understood.', body: 'Developed with community partners in Hartford and East Hartford, this African American Vernacular English corpus preserves the grammar of more than 80,000 transcribed words. Written transcripts are public; contributor recordings remain restricted. Princeton Prize in Race Relations regional finalist, 2026.', links: [['Explore the corpus', 'https://github.com/karthiksrikumar/ConvoAAVE-POLLEN'], ['Project & methodology', 'https://machinamundi.vercel.app/convoaave']] },
+    { title: 'Student AI Council', claim: 'Students belong in decisions about classroom AI.', body: 'As a South Windsor Student AI Squad co-lead, I work with educators and speak at Board of Education meetings. My videos helped introduce AI tools to 900 students; by March 2025, student use reached 2,400. I also helped educators build tools used in 72% of district classrooms and joined an AI in Education panel for New England educators.', links: [['South Windsor Public Schools', 'https://www.southwindsorschools.org/']] },
+  ];
+  const slides = [...(photos['machina-mundi'] || []), ...(photos.convoaave || []), ...(photos['student-ai'] || [])];
+  const fallback = { src: 'media/machina-mundi-logo.png', alt: 'Machina Mundi emblem' };
+  if (!slides.length) slides.push(fallback);
+  main.innerHTML = `<section class="equity-screen" aria-labelledby="equity-title"><div class="equity-head"><p class="eyebrow">Equity & representation</p><h1 id="equity-title">Who gets a seat at the table?</h1><p>Three ways to make AI more accountable to the people it serves.</p></div><div class="equity-tabs" role="tablist" aria-label="Equity projects">${stories.map((s, i) => `<button role="tab" id="equity-tab-${i}" aria-controls="equity-panel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-equity-tab="${i}"><span>0${i + 1}</span>${s.title}</button>`).join('')}</div><div class="equity-feature"><article class="equity-story" id="equity-panel" role="tabpanel" aria-labelledby="equity-tab-0" tabindex="0"></article><div class="equity-media"><button class="equity-photo" data-photo="" data-caption="" aria-label="Open photograph">${image(slides[0].src, slides[0].alt, 'equity-photo-image')}<span class="equity-photo-open">View photograph ↗</span></button><div class="equity-media-bar"><p class="equity-photo-caption"></p><div class="equity-reel-controls"><button data-slide-prev aria-label="Previous photograph">←</button><span class="equity-slide-count"></span><button data-slide-next aria-label="Next photograph">→</button><button data-slide-pause aria-label="Pause image rotation" aria-pressed="false">Ⅱ</button></div></div></div></div></section>`;
+  let selected = 0, slide = 0, timer, paused = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const panel = main.querySelector('#equity-panel');
+  const tabs = [...main.querySelectorAll('[data-equity-tab]')];
+  const photoButton = main.querySelector('.equity-photo');
+  const pauseButton = main.querySelector('[data-slide-pause]');
+  function showStory(index) {
+    selected = index;
+    const story = stories[index];
+    panel.innerHTML = `<p class="eyebrow">0${index + 1} / 03</p><h2>${story.title}</h2><p class="equity-thesis">${story.claim}</p><p class="equity-body">${story.body}</p><div class="link-row">${story.links.map(l => external(...l)).join('')}</div>`;
+    panel.setAttribute('aria-labelledby', `equity-tab-${index}`);
+    tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; });
+  }
+  function showSlide(index) {
+    slide = (index + slides.length) % slides.length;
+    const current = slides[slide];
+    const img = photoButton.querySelector('img');
+    img.src = asset(current.src); img.alt = current.alt;
+    photoButton.dataset.photo = current.src; photoButton.dataset.caption = current.alt;
+    main.querySelector('.equity-photo-caption').textContent = current.alt;
+    main.querySelector('.equity-slide-count').textContent = `${String(slide + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+  }
+  function startRotation() { clearInterval(timer); if (!paused && slides.length > 1) timer = setInterval(() => showSlide(slide + 1), 5000); }
+  tabs.forEach((tab, i) => { tab.onclick = () => { equityInteracted = true; showStory(i); }; tab.onkeydown = e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); equityInteracted = true; const next = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length; showStory(next); tabs[next].focus(); } }; });
+  main.querySelector('[data-slide-prev]').onclick = () => { equityInteracted = true; showSlide(slide - 1); startRotation(); };
+  main.querySelector('[data-slide-next]').onclick = () => { equityInteracted = true; showSlide(slide + 1); startRotation(); };
+  pauseButton.onclick = () => { equityInteracted = true; paused = !paused; pauseButton.setAttribute('aria-pressed', String(paused)); pauseButton.setAttribute('aria-label', paused ? 'Resume image rotation' : 'Pause image rotation'); pauseButton.textContent = paused ? '▶' : 'Ⅱ'; startRotation(); };
+  pauseButton.setAttribute('aria-pressed', String(paused)); pauseButton.setAttribute('aria-label', paused ? 'Resume image rotation' : 'Pause image rotation'); pauseButton.textContent = paused ? '▶' : 'Ⅱ';
+  showStory(selected); showSlide(slide); startRotation(); bindPhotos();
+  cleanup = () => { clearInterval(timer); cleanup = () => {}; };
 }
 
 function galaPage() {
@@ -103,6 +137,7 @@ async function route() {
   if (location.hash === '#selected') { document.querySelector('#selected')?.scrollIntoView({ behavior: 'smooth' }); return; }
   generation++; scene?.dispose(); scene = null; cleanup(); dialog.close();
   const path = location.hash.replace(/^#\/?/, '') || 'home';
+  if (path === 'equity') equityInteracted = false;
   document.body.dataset.page = path;
   document.querySelectorAll('.site-header nav a').forEach(a => { const active = a.hash === `#/${path}`; if (active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   const titles = { home: 'Karthik Srikumar', projects: 'Projects', research: 'Research & publications', equity: 'Equity & representation', gala: 'Sculpture gala' };
@@ -127,12 +162,12 @@ async function refreshPhotos() {
     for (const collection of Object.values(fresh)) collection.sort((a, b) => a.name.localeCompare(b.name));
     photos = fresh;
     // Refresh the photographic page only before a reader has started interacting with it.
-    if (document.body.dataset.page === 'equity' && window.scrollY < 50 && !dialog.open) equityPage();
+    if (document.body.dataset.page === 'equity' && !equityInteracted && !dialog.open) equityPage();
   } catch { /* Keep the bundled photo manifest when GitHub is unavailable or rate limited. */ }
 }
 try {
   const response = await fetch(`${base}content-manifest.json`), content = await response.json();
   for (const p of papers) { if (content[p.id]?.pdf) p.pdf = content[p.id].pdf; if (content[p.id]?.preview) { p.preview = content[p.id].preview; p.actualPreview = true; } }
-  if (content['we-the-corporations']?.pdf) { projects[1].links = [['Read the essay', content['we-the-corporations'].pdf]]; projects[1].image = content['we-the-corporations'].preview || projects[1].image; }
+  if (content['we-the-corporations']?.pdf) projects[1].links = [['Read the essay', content['we-the-corporations'].pdf]];
 } catch { /* Verified external sources remain available. */ }
 window.addEventListener('hashchange', route); route(); refreshPhotos();

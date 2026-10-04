@@ -6,6 +6,11 @@ for (const name of await readdir('obj')) {
   if (/\.(obj|mtl)$/i.test(name)) await copyFile(path.join('obj', name), path.join('public/models', name));
 }
 await copyFile('obj/head.stl', 'public/head.stl');
+await mkdir('public/papers', { recursive: true });
+try {
+  await access('writing/The Revolution Boutta Be Televised.pdf');
+  await copyFile('writing/The Revolution Boutta Be Televised.pdf', 'public/papers/we-the-corporations.pdf');
+} catch { /* The source essay is optional in forks of this project. */ }
 const sections = ['oatnet', 'corporations', 'subtraction-games', 'driveaeye', 'babyvlm', 'safenet', 'machina-mundi', 'convoaave', 'student-ai', 'gala'];
 const manifest = {};
 for (const section of sections) {
