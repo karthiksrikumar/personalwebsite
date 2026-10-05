@@ -1,0 +1,38 @@
+[
+  {
+    "name": "platform_body",
+    "time": 23.15764496436368
+  },
+  {
+    "name": "terrace",
+    "time": 24.62441604622636
+  },
+  {
+    "name": "main_block",
+    "time": 25.208140675604408
+  },
+  {
+    "name": "main_cornice",
+    "time": 26.390674109351856
+  },
+  {
+    "name": "dome_podium",
+    "time": 26.625015680936304
+  },
+  {
+    "name": "drum",
+    "time": 26.942650675401275
+  },
+  {
+    "name": "dome_shell",
+    "time": 28.25172604607669
+  },
+  {
+    "name": "tholos",
+    "time": 29.25720215787278
+  },
+  {
+    "name": "statue_head",
+    "time": 30.123673105495797
+  }
+]

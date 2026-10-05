@@ -1,0 +1,7 @@
+{
+  "sampledTimes": 120,
+  "intervalSeconds": 0.5,
+  "nearPlaneRaySamples": 5,
+  "nearPlaneIntersections": [],
+  "loadingErrors": []
+}

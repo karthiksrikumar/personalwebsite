@@ -2,6 +2,8 @@
 
 A personal portfolio with a real-time head scan, orbiting navigation, research publications, project details, community photographs, and a seven-piece 3D sculpture exhibition.
 
+The [60-second political sculpture film](film/output/political-sculptures-60s.mp4) and its [rendering source and instructions](film/README.md) are in `film/`.
+
 ## Preview and build
 
 Use Node 22 or newer:
