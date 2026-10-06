@@ -1,15 +1,15 @@
 {
-  "durationSeconds": 75,
+  "durationSeconds": 90,
   "fps": 24,
-  "decodedFrames": 1800,
+  "decodedFrames": 2160,
   "width": 1920,
   "height": 1080,
   "videoCodec": "H.264",
   "pixelFormat": "yuv420p",
   "audioCodec": "AAC",
   "decodeErrors": [],
-  "bytes": 42235837,
-  "sha256": "38a2a202e4d9cd8b611103f0f35391114058deb9676a4460cc3952d615c89be7",
+  "bytes": 64166912,
+  "sha256": "932ed11528c472264d1a2a4a19f6dd2995fea884afe85752099df531352105c5",
   "sourceTrianglesPreserved": true,
   "sources": [
     {
@@ -175,37 +175,37 @@
   "sound": {
     "sampleRate": 48000,
     "channels": 2,
-    "peakDbFS": -23.71,
+    "peakDbFS": -22.29,
     "originalSynthesis": true,
     "constructionAccents": [
       {
         "name": "pedestal_base",
-        "time": 46.1428572393368
+        "time": 61.1428572393368
       },
       {
         "name": "pedestal_cap",
-        "time": 47.658667771623065
+        "time": 62.658667771623065
       },
       {
         "name": "waist_rope",
-        "time": 52.7954798435156
+        "time": 67.7954798435156
       },
       {
         "name": "crown_band",
-        "time": 55.60485392159373
+        "time": 70.60485392159373
       },
       {
         "name": "torch_flame",
-        "time": 58.709805690351295
+        "time": 73.70980569035129
       }
     ]
   },
   "browserPlayback": {
-    "duration": 75,
+    "duration": 90,
     "width": 1920,
     "height": 1080,
     "ended": true,
-    "finalTime": 75,
+    "finalTime": 90,
     "error": null
   }
 }

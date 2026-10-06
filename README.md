@@ -2,7 +2,7 @@
 
 A personal portfolio with a real-time head scan, orbiting navigation, research publications, project details, community photographs, and a seven-piece 3D sculpture exhibition.
 
-The [75-second, four-piece political sculpture film](https://github.com/karthiksrikumar/personalwebsite/raw/refs/heads/main/film/output/political-sculptures-75s.mp4) and its [rendering source and instructions](film/README.md) are in `film/`.
+The [90-second, four-piece political sculpture film](https://github.com/karthiksrikumar/personalwebsite/raw/refs/heads/main/film/output/political-sculptures-90s.mp4) and its [rendering source and instructions](film/README.md) are in `film/`.
 
 ## Preview and build
 
