@@ -22,7 +22,7 @@ try{
  await writeFile('film/output/assembly-parts.json',JSON.stringify(await page.evaluate(()=>window.assemblyParts),null,2));
  await writeFile('film/output/assembly-events.json',JSON.stringify(await page.evaluate(()=>window.assemblyEvents),null,2));
  console.log(JSON.stringify(inventory.map(({id,triangles,height,parts})=>({id,triangles,height,parts}))));
- const times=preview?[3,8,15,17,24,26,33,35,42,44,47,51,55,58.5,64,72]:Array.from({length:1800},(_,i)=>i/24);
+ const times=preview?[1.5,4.5,7.5,11,15,18,22,25.5,29,32.5,36,39,43,51,64,72]:Array.from({length:1800},(_,i)=>i/24);
  const started=Date.now();
  for(let i=0;i<times.length;i++){
   if(ranges&&!ranges.some(([a,b])=>times[i]>=a&&times[i]<b))continue;

@@ -97,9 +97,9 @@ for(const id of ids){
 }
 window.inventory=inventory;window.assemblyParts=partAnalysis[1].parts;
 window.assemblyEvents=['pedestal_base','pedestal_cap','waist_rope','crown_band','torch_flame'].map(name=>{
- const part=models[1].parts.find(p=>p.name===name);return {name,time:43+15.2*part.box.max.y/models[1].height};
+ const part=models[1].parts.find(p=>p.name===name);return {name,time:45+14.2*part.box.max.y/models[1].height};
 });
-window.filmCuts=[0,7,16,25,34,43,59,66,75];
+window.filmCuts=[0,3,13.5,24,34.5,45,60,69,75];
 const clamp=T.MathUtils.clamp,smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const lerp=T.MathUtils.lerp;
 function corners(box){return [0,1,2,3,4,5,6,7].map(i=>new T.Vector3(i&1?box.max.x:box.min.x,i&2?box.max.y:box.min.y,i&4?box.max.z:box.min.z));}
@@ -116,14 +116,36 @@ function fit(box,azimuth,elevation,margin=1.15,lens=42,keep){
  bokeh.uniforms.focus.value=distance;
 }
 let checkBoxes=[],isCollection=false,currentShot='';
-function solo(index,u){
+// The close passes use named OBJ parts as aim points; framing checks follow that intentional crop.
+const detailNames=[
+ [/^portico_pediment$|^pediment_tympanum$/, /^flame_[0-3](_core)?$/],
+ [/^crown_band$|^crown_ray_[0-6]$/, /^waist_rope$|^rope_to_elephant$|^rope_to_donkey$/],
+ [/^dome_shell$|^statue_body$|^statue_head$/, /^paddle_lot_[ab]_handle$|^price_tag_[abc]_string$/],
+ [/^hand_0_(palm|finger[0-3]_ph[0-2])$/, /^string_taut_[0-5]_bill_[0-9]+$/]
+];
+const detailBoxes=models.map((m,i)=>detailNames[i].map(pattern=>{
+ const box=new T.Box3();for(const part of m.parts)if(pattern.test(part.name))box.union(part.box);
+ return box.isEmpty()?m.detailBox.clone():box;
+}));
+function solo(index,seconds){
  const m=models[index];m.group.visible=true;
- const phase=smooth((u-.36)/.64),box=m.bounds.clone();
- const tightening=index===3?0:.3*phase;
- box.min.lerp(m.detailBox.min,tightening);box.max.lerp(m.detailBox.max,tightening);
- const azimuths=[[25,12],[-8,8],[22,7],[14,-5]][index];
- fit(box,lerp(...azimuths,smooth(u)),index===0?19:index===2?18:10,lerp(1.25,1.1,phase),index===1?38:42,m.bounds);
- checkBoxes=[{id:m.id,box:m.bounds}];
+ let box=m.bounds,azimuth,elevation,margin,lens,keep=m.bounds;
+ if(seconds<3.2){
+  const u=smooth(seconds/3.2);currentShot=`${m.id}-drone-orbit`;
+  azimuth=lerp([-48,-54,-48,-55][index],[46,48,51,48][index],u);
+  elevation=lerp(25,15,u);margin=lerp(1.26,1.09,u);lens=35;
+ }else if(seconds<6.6){
+  const u=smooth((seconds-3.2)/3.4);currentShot=`${m.id}-detail-push`;
+  const first=detailBoxes[index][0],second=detailBoxes[index][1];
+  box=first.clone();box.min.lerp(second.min,u*.6);box.max.lerp(second.max,u*.6);
+  azimuth=lerp(25,-10,u);elevation=lerp(16,8,u);margin=lerp(1.65,1.3,u);lens=58;keep=undefined;
+ }else{
+  const u=smooth((seconds-6.6)/3.9);currentShot=`${m.id}-flyby`;
+  azimuth=lerp(-64,62,u);elevation=lerp(8,21,u);
+  margin=1.09+.17*Math.abs(2*u-1);lens=lerp(37,47,u);
+ }
+ fit(box,azimuth,elevation,margin,lens,keep);
+ checkBoxes=[{id:m.id,box:keep||box}];
 }
 function collection(u,end=false){
  const union=new T.Box3();checkBoxes=[];isCollection=true;
@@ -138,25 +160,25 @@ function collection(u,end=false){
 window.renderFrame=time=>{
  const t=clamp(time,0,75);models.forEach(m=>{m.group.visible=false;m.group.position.set(0,0,0);});
  isCollection=false;checkBoxes=[];printPlane.constant=100;printUniforms.height.value=100;printUniforms.active.value=0;
- capGroup.visible=t>=43&&t<58.2;ao.enabled=t<43||t>=59;bokeh.enabled=ao.enabled;
+ capGroup.visible=t>=45&&t<59.2;ao.enabled=t<45||t>=60;bokeh.enabled=ao.enabled;
  softbox.width=7;softbox.position.set(-6,6,7);softbox.lookAt(0,1,0);softbox.intensity=4.2;
  fill.width=6;fill.position.set(6,4,6);fill.lookAt(0,1,0);fill.intensity=2.7;ceiling.width=16;ceiling.intensity=2;
  scene.environmentIntensity=.42;renderer.toneMappingExposure=1.12;
  key.position.set(-5+Math.sin(t*.13)*2,8,5);key.target.position.set(0,1,0);key.angle=.8;key.intensity=135;
  rim.position.set(4,6,-5);rim.target.position.set(0,1.5,0);rim.angle=.8;rim.intensity=240;
- if(t<7){currentShot='collection-opening';collection(t/7);}
- else if(t<43){const index=Math.min(3,Math.floor((t-7)/9));currentShot=ids[index];solo(index,(t-7-index*9)/9);}
- else if(t<59){
+ if(t<3){currentShot='collection-opening';collection(t/3);}
+ else if(t<45){const index=Math.min(3,Math.floor((t-3)/10.5));solo(index,t-3-index*10.5);}
+ else if(t<60){
   currentShot='liberty-layer-build';const m=models[1];m.group.visible=true;
-  const progress=clamp((t-43)/15.2,0,1),height=Math.ceil(progress*360)/360*m.height;
+  const progress=clamp((t-45)/14.2,0,1),height=Math.ceil(progress*360)/360*m.height;
   printPlane.constant=height;printUniforms.height.value=height;printUniforms.active.value=progress<1?1:0;
   capPlanes.forEach(cap=>{cap.position.y=height+.0001;});
-  fit(m.bounds,lerp(-12,8,smooth((t-43)/16)),14,1.13,40);checkBoxes=[{id:m.id,box:m.bounds}];
- }else if(t<66){
+  fit(m.bounds,lerp(-35,42,smooth((t-45)/15)),lerp(22,10,smooth((t-45)/15)),1.13,40);checkBoxes=[{id:m.id,box:m.bounds}];
+ }else if(t<69){
   currentShot='liberty-completed-detail';const m=models[1];m.group.visible=true;
-  const u=smooth((t-59)/7),box=m.bounds.clone();box.min.lerp(m.detailBox.min,.3*u);box.max.lerp(m.detailBox.max,.3*u);
-  fit(box,lerp(8,0,u),12,lerp(1.16,1.1,u),42,m.bounds);checkBoxes=[{id:m.id,box:m.bounds}];
- }else{currentShot='collection-finale';collection((t-66)/9,true);}
+  const u=smooth((t-60)/9),box=detailBoxes[1][0];
+  fit(box,lerp(-32,36,u),lerp(18,12,u),lerp(1.7,1.28,u),58);checkBoxes=[{id:m.id,box}];
+ }else{currentShot='collection-finale';collection((t-69)/6,true);}
  composer.render();return {time:t,shot:currentShot};
 };
 window.checkComposition=()=>{

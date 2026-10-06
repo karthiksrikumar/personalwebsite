@@ -8,20 +8,20 @@
 
 ## Camera and construction design
 
-Every camera is fitted to the measured, full geometry of its sculpture. The camera solver projects all eight bounding-box corners, accounts for object depth and camera elevation, and reserves breathing room around the outermost parts. Closer views retain a full-model safety constraint, including Marionette's raised hands and Liberty's people and party animals. The collection uses four separate pedestals in a single row; their projected bounds are checked for overlap.
+The full-model orbit and flyby cameras are fitted to the measured geometry of each sculpture. The camera solver projects all eight bounding-box corners, accounts for object depth and camera elevation, and reserves breathing room around the outermost parts. Intentional close passes aim at named OBJ components: the Price of Power pediment and flames, Liberty's crown and ropes, Auction's dome and bidding props, and Marionette's hand and strings. These detail shots deliberately crop the rest of the model. The collection uses four separate pedestals in a single row; their projected bounds are checked for overlap.
 
-The 16-second Liberty build reveals 360 horizontal layers through the actual source meshes. Parts stay at their final coordinates throughout. Stencil cross-sections close the visible cut surfaces with their original material colors. Clipped geometry also stops casting shadows. Ambient occlusion and the depth-of-field pass are disabled during construction so their depth buffers cannot reveal unbuilt surfaces.
+The 15-second Liberty build reveals 360 horizontal layers through the actual source meshes. Parts stay at their final coordinates throughout. Stencil cross-sections close the visible cut surfaces with their original material colors. Clipped geometry also stops casting shadows. Ambient occlusion and the depth-of-field pass are disabled during construction so their depth buffers cannot reveal unbuilt surfaces.
 
 | Time | Shot |
 | --- | --- |
-| 0–7s | Wide introduction to the four separated sculptures |
-| 7–16s | Price of Power: full view, then a measured push toward the building |
-| 16–25s | Liberty Tug of War: establish both sides, then move closer |
-| 25–34s | Capitol at Auction: wide view, then architecture and auction details |
-| 34–43s | Capitol Marionette: building, strings, and hands remain visible |
-| 43–59s | Liberty forms from the bottom upward in fixed, solid layers |
-| 59–66s | Completed Liberty, with a gradual closer view |
-| 66–75s | Four-piece finale; camera holds from about 72.1s; fade at 74s |
+| 0–3s | Short wide introduction to the four separated sculptures |
+| 3–13.5s | Price of Power: orbit, pediment/flame detail push, flyby |
+| 13.5–24s | Liberty Tug of War: orbit, crown/rope detail push, flyby |
+| 24–34.5s | Capitol at Auction: orbit, dome/bidding detail push, flyby |
+| 34.5–45s | Capitol Marionette: orbit, hand/string detail push, flyby |
+| 45–60s | Liberty forms from the bottom upward in fixed, solid layers, with a camera arc |
+| 60–69s | Completed Liberty, with a moving crown detail shot |
+| 69–75s | Short four-piece finale; fade at 74s |
 
 Lighting uses large warm and cool softboxes, moving key illumination, rim light, an environment-light approximation, and a seamless slate backdrop. Materials preserve the MTL color and opacity values, with added physical roughness and metalness. Rendering uses shadow maps, screen-space ambient occlusion, environment reflections, restrained depth of field, multisample antialiasing, ACES tone mapping, and two shutter samples per frame. This is a rasterized PBR scene rather than a path-traced scene.
 

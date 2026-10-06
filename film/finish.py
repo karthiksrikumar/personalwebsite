@@ -60,11 +60,11 @@ def score():
         stereo[start:start+length,0] += strike*np.sqrt(1-pan)
         stereo[start:start+length,1] += strike*np.sqrt(pan)
     # Slow upper harmonic bloom as the completed collection appears.
-    bloom = np.clip((t-59)/7, 0, 1)*np.clip((73-t)/9, 0, 1)
+    bloom = np.clip((t-60)/7, 0, 1)*np.clip((73-t)/9, 0, 1)
     stereo += (.012*bloom*np.sin(2*np.pi*293.664*t))[:,None]
     fade = np.clip(t/4,0,1)*np.clip((75-t)/2,0,1)
     # A gently evolving harmonic bed gives the longer edit more movement.
-    for start,hz in [(7,174.614),(16,196),(25,220),(34,164.814),(59,220),(66,293.664)]:
+    for start,hz in [(3,174.614),(13.5,196),(24,220),(34.5,164.814),(60,220),(69,293.664)]:
         local=t-start
         env=np.clip(local/2,0,1)*np.clip((11-local)/3,0,1)
         for channel in range(2):
@@ -125,7 +125,7 @@ def main():
     assert video.stat().st_size < 95_000_000, 'Video exceeds the conservative GitHub size budget'
     with Image.open(FRAMES/'01728.jpg') as poster:
         poster.save(OUT/'poster.jpg',quality=95)
-    times=[3,8,15,17,24,26,33,35,42,44,47,51,55,58.5,64,72]
+    times=[1.5,4.5,7.5,11,15,18,22,25.5,29,32.5,36,39,43,51,64,72]
     contact=Image.new('RGB',(1600,980),'#0a0a0a');draw=ImageDraw.Draw(contact)
     for i,seconds in enumerate(times):
         with Image.open(FRAMES/f'{round(seconds*24):05}.jpg') as frame:
