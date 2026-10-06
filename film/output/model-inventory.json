@@ -1,46 +1,11 @@
 [
   {
-    "id": "capitol-at-auction",
-    "triangles": 23220,
-    "parts": 365,
-    "height": 2.4270373772078386,
-    "materials": [
-      "platform_ply",
-      "platform_edge",
-      "brass",
-      "paper",
-      "bill_ink",
-      "marble_weathered",
-      "marble",
-      "wire",
-      "bill_green",
-      "tag_card",
-      "black_acrylic",
-      "visitor_grey"
-    ]
-  },
-  {
-    "id": "capitol-marionette",
-    "triangles": 82624,
-    "parts": 2613,
-    "height": 3.8917688223031854,
-    "materials": [
-      "marble_grey",
-      "marble",
-      "dome_castiron",
-      "gilt",
-      "basalt_base",
-      "rubble",
-      "currency_soiled",
-      "currency",
-      "bronze_hand"
-    ]
-  },
-  {
     "id": "price-of-power",
+    "source": "obj/price-of-power.obj",
+    "materialSource": "obj/price-of-power.mtl",
     "triangles": 72308,
     "parts": 1041,
-    "height": 2.398384972926109,
+    "height": 2.997981309890747,
     "materials": [
       "stone_grey",
       "marble",
@@ -60,89 +25,115 @@
       "figure_ghost",
       "flag_fragment_red",
       "ground_ash"
-    ]
+    ],
+    "bounds": {
+      "min": [
+        -2.5,
+        0,
+        -2.5
+      ],
+      "max": [
+        2.5,
+        2.997981309890747,
+        2.5
+      ]
+    }
   },
   {
-    "id": "machina-mundi",
-    "triangles": 73080,
-    "parts": 231,
-    "height": 4,
+    "id": "liberty-tug-of-war (1)",
+    "source": "obj/liberty-tug-of-war (1).obj",
+    "materialSource": "obj/liberty-tug-of-war (1).mtl",
+    "triangles": 79096,
+    "parts": 220,
+    "height": 2.281428575515747,
     "materials": [
-      "cobalt_deep",
+      "patina",
+      "patinaDark",
       "gold",
-      "ivory",
-      "gold_pale",
-      "cobalt"
-    ]
+      "rope",
+      "stone",
+      "folk",
+      "folkWorn",
+      "skin",
+      "partyRed",
+      "partyBlue"
+    ],
+    "bounds": {
+      "min": [
+        -2.5,
+        0,
+        -1.035225749015808
+      ],
+      "max": [
+        2.5,
+        2.281428575515747,
+        1.035225749015808
+      ]
+    }
   },
   {
-    "id": "stadium",
-    "triangles": 35664,
-    "parts": 239,
-    "height": 0.758121520734154,
+    "id": "capitol-at-auction",
+    "source": "obj/capitol-at-auction.obj",
+    "materialSource": "obj/capitol-at-auction.mtl",
+    "triangles": 23220,
+    "parts": 365,
+    "height": 3.033796787261963,
     "materials": [
-      "concrete",
-      "turf",
-      "endzone_navy",
-      "field_paint",
-      "accent_red",
-      "goalpost",
-      "seating_navy",
-      "seating_navy_light",
-      "glazing",
-      "steel",
-      "white_panel",
-      "floodlight",
-      "screen_dark"
-    ]
+      "platform_ply",
+      "platform_edge",
+      "brass",
+      "paper",
+      "bill_ink",
+      "marble_weathered",
+      "marble",
+      "wire",
+      "bill_green",
+      "tag_card",
+      "black_acrylic",
+      "visitor_grey"
+    ],
+    "bounds": {
+      "min": [
+        -2.3167574405670166,
+        0,
+        -2.5
+      ],
+      "max": [
+        2.3167574405670166,
+        3.033796787261963,
+        2.5
+      ]
+    }
   },
   {
-    "id": "south-windsor-high-school",
-    "triangles": 1786,
-    "parts": 72,
-    "height": 1.27858200089389,
+    "id": "capitol-marionette",
+    "source": "obj/capitol-marionette.obj",
+    "materialSource": "obj/capitol-marionette.mtl",
+    "triangles": 82624,
+    "parts": 2613,
+    "height": 4.864710807800293,
     "materials": [
-      "paving",
-      "brick",
-      "roof_membrane",
-      "coping_gray",
-      "brick_dark",
-      "cream_band",
-      "maroon_sign",
-      "lettering_bobcats_mat",
-      "lettering_school_name_mat",
-      "gold_trim",
-      "medallion_mark_mat",
-      "column_white",
-      "glass",
-      "mullion"
-    ]
-  },
-  {
-    "id": "blocky-cow",
-    "triangles": 312,
-    "parts": 26,
-    "height": 3.3625218689544605,
-    "materials": [
-      "cowhide",
-      "cowhide_head",
-      "muzzle",
-      "nostril",
-      "eye_white",
-      "eye_pupil",
-      "horn",
-      "cowhide_leg",
-      "hoof",
-      "udder"
-    ]
-  },
-  {
-    "id": "head",
-    "triangles": 141636,
-    "parts": 1,
-    "height": 4,
-    "materials": [
-      "scan porcelain"
-    ]
+      "marble_grey",
+      "marble",
+      "dome_castiron",
+      "gilt",
+      "basalt_base",
+      "rubble",
+      "currency_soiled",
+      "currency",
+      "bronze_hand"
+    ],
+    "bounds": {
+      "min": [
+        -2.5,
+        0,
+        -1.5197280645370483
+      ],
+      "max": [
+        2.5,
+        4.864710807800293,
+        1.5197280645370483
+      ]
+    }
   }
 ]

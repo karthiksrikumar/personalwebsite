@@ -15,9 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 CACHE = ROOT / '.cache'
 OUT = ROOT / 'film/output'
-FRAMES = CACHE / 'film-frames'
+FRAMES = CACHE / 'film75-frames'
 RATE = 48000
-DURATION = 60
+DURATION = 75
 FPS = 24
 
 def encoder():
@@ -60,26 +60,33 @@ def score():
         stereo[start:start+length,0] += strike*np.sqrt(1-pan)
         stereo[start:start+length,1] += strike*np.sqrt(pan)
     # Slow upper harmonic bloom as the completed collection appears.
-    bloom = np.clip((t-36)/6, 0, 1)*np.clip((57-t)/9, 0, 1)
+    bloom = np.clip((t-59)/7, 0, 1)*np.clip((73-t)/9, 0, 1)
     stereo += (.012*bloom*np.sin(2*np.pi*293.664*t))[:,None]
-    fade = np.clip(t/4,0,1)*np.clip((60-t)/2,0,1)
+    fade = np.clip(t/4,0,1)*np.clip((75-t)/2,0,1)
+    # A gently evolving harmonic bed gives the longer edit more movement.
+    for start,hz in [(7,174.614),(16,196),(25,220),(34,164.814),(59,220),(66,293.664)]:
+        local=t-start
+        env=np.clip(local/2,0,1)*np.clip((11-local)/3,0,1)
+        for channel in range(2):
+            stereo[:,channel]+=.014*env*np.sin(2*np.pi*hz*t+.2*channel)
+            stereo[:,channel]+=.005*env*np.sin(2*np.pi*hz*1.5*t+.3*channel)
     stereo *= fade[:,None]
     peak = float(np.max(np.abs(stereo)))
-    with wave.open(str(CACHE/'film-score.wav'),'wb') as wav:
+    with wave.open(str(CACHE/'film75-score.wav'),'wb') as wav:
         wav.setnchannels(2);wav.setsampwidth(2);wav.setframerate(RATE)
         wav.writeframes((stereo*32767).astype('<i2').tobytes())
     return {'sampleRate':RATE,'channels':2,'peakDbFS':round(20*np.log10(peak),2),'originalSynthesis':True,'constructionAccents':events}
 
 def main():
     files = sorted(FRAMES.glob('*.jpg'))
-    assert len(files) == FPS*DURATION, f'Expected 1440 frames; found {len(files)}'
-    assert [p.name for p in files] == [f'{i:05}.jpg' for i in range(1440)]
+    assert len(files) == FPS*DURATION, f'Expected 1800 frames; found {len(files)}'
+    assert [p.name for p in files] == [f'{i:05}.jpg' for i in range(1800)]
     for p in files:
         with Image.open(p) as im:
             assert im.size == (1920,1080), (p, im.size)
             im.verify()
     models=json.loads((OUT/'model-inventory.json').read_text())
-    expected={p.stem for p in (ROOT/'obj').iterdir() if p.suffix.lower() in ['.obj','.stl']}
+    expected={'price-of-power','liberty-tug-of-war (1)','capitol-at-auction','capitol-marionette'}
     assert {m['id'] for m in models} == expected, 'Missing source model'
     source_checks=[]
     for model in models:
@@ -98,34 +105,34 @@ def main():
         source_checks.append({'file':source.relative_to(ROOT).as_posix(),'triangles':triangles,'sha256':hashlib.sha256(data).hexdigest()})
     sound = score()
     ffmpeg = encoder()
-    video = OUT/'political-sculptures-60s.mp4'
+    video = OUT/'political-sculptures-75s.mp4'
     subprocess.run([ffmpeg,'-y','-hide_banner','-loglevel','error','-framerate','24',
-        '-i',str(FRAMES/'%05d.jpg'),'-i',str(CACHE/'film-score.wav'),
-        '-vf','fade=t=in:st=0:d=1.2,fade=t=out:st=59:d=0.958333',
+        '-i',str(FRAMES/'%05d.jpg'),'-i',str(CACHE/'film75-score.wav'),
+        '-vf','scale=in_range=full:out_range=limited:in_color_matrix=bt601:out_color_matrix=bt709,fade=t=in:st=0:d=1.2,fade=t=out:st=74:d=0.958333',
         '-c:v','libx264','-preset','slow','-crf','18','-pix_fmt','yuv420p',
-        '-c:a','aac','-b:a','160k','-ar','48000','-t','60',
+        '-color_primaries','bt709','-color_trc','bt709','-colorspace','bt709','-c:a','aac','-b:a','160k','-ar','48000','-t','75',
         '-movflags','+faststart','-metadata','title=Political Sculptures',str(video)], check=True)
     # A full decode verifies every video frame and the entire audio stream.
     decoded = subprocess.run([ffmpeg,'-v','error','-xerror','-i',str(video),
         '-progress','pipe:1','-f','null','-'],capture_output=True,text=True,check=True)
     counts=re.findall(r'^frame=(\d+)', decoded.stdout, re.M)
-    assert counts and int(counts[-1]) == 1440, decoded.stdout
+    assert counts and int(counts[-1]) == 1800, decoded.stdout
     assert not decoded.stderr.strip(), decoded.stderr
     metadata=subprocess.run([ffmpeg,'-hide_banner','-i',str(video)],capture_output=True,text=True).stderr
-    assert 'Duration: 00:01:00.00' in metadata, metadata
+    assert 'Duration: 00:01:15.00' in metadata, metadata
     assert '1920x1080' in metadata and '24 fps' in metadata, metadata
     assert 'Audio: aac' in metadata, metadata
     assert video.stat().st_size < 95_000_000, 'Video exceeds the conservative GitHub size budget'
-    with Image.open(FRAMES/'01344.jpg') as poster:
+    with Image.open(FRAMES/'01728.jpg') as poster:
         poster.save(OUT/'poster.jpg',quality=95)
-    times=[3,7.8,10,14,18,22,27,31,36.5,41,47,56]
-    contact=Image.new('RGB',(1440,1160),'#0a0a0a');draw=ImageDraw.Draw(contact)
+    times=[3,8,15,17,24,26,33,35,42,44,47,51,55,58.5,64,72]
+    contact=Image.new('RGB',(1600,980),'#0a0a0a');draw=ImageDraw.Draw(contact)
     for i,seconds in enumerate(times):
         with Image.open(FRAMES/f'{round(seconds*24):05}.jpg') as frame:
-            contact.paste(frame.resize((480,270)),(i%3*480,i//3*290))
-            draw.text((i%3*480+8,i//3*290+273),f'{seconds:04.1f}s',fill='#c9c9c9')
+            contact.paste(frame.resize((400,225)),(i%4*400,i//4*245))
+            draw.text((i%4*400+8,i//4*245+227),f'{seconds:04.1f}s',fill='#c9c9c9')
     contact.save(OUT/'contact-sheet.jpg',quality=92)
-    report={'durationSeconds':60,'fps':24,'decodedFrames':int(counts[-1]),'width':1920,'height':1080,
+    report={'durationSeconds':75,'fps':24,'decodedFrames':int(counts[-1]),'width':1920,'height':1080,
             'videoCodec':'H.264','pixelFormat':'yuv420p','audioCodec':'AAC','decodeErrors':[],
             'bytes':video.stat().st_size,'sha256':hashlib.sha256(video.read_bytes()).hexdigest(),
             'sourceTrianglesPreserved':True,'sources':source_checks,'models':models,'sound':sound}

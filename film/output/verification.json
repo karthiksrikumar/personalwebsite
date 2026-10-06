@@ -1,17 +1,27 @@
 {
-  "durationSeconds": 60,
+  "durationSeconds": 75,
   "fps": 24,
-  "decodedFrames": 1440,
+  "decodedFrames": 1800,
   "width": 1920,
   "height": 1080,
   "videoCodec": "H.264",
   "pixelFormat": "yuv420p",
   "audioCodec": "AAC",
   "decodeErrors": [],
-  "bytes": 33214729,
-  "sha256": "30639b0aec937eed9cba8f7acc2b3185b0ca41d97b1013f4481b82746c6859cf",
+  "bytes": 26130911,
+  "sha256": "f81c1fb39655b8df12d64783dbea69b4ac3e22ec98db38f754a17785cfaac398",
   "sourceTrianglesPreserved": true,
   "sources": [
+    {
+      "file": "obj/price-of-power.obj",
+      "triangles": 72308,
+      "sha256": "538261c832f6de09a6864919dc2abcb511c894f7d89ab95db05f5dfe6195fc8b"
+    },
+    {
+      "file": "obj/liberty-tug-of-war (1).obj",
+      "triangles": 79096,
+      "sha256": "a5bc27b8eee324e9a2580186812573a91b31a49c2a42d67079fea8353cd01c8a"
+    },
     {
       "file": "obj/capitol-at-auction.obj",
       "triangles": 23220,
@@ -21,81 +31,16 @@
       "file": "obj/capitol-marionette.obj",
       "triangles": 82624,
       "sha256": "4a76279016aad6d9db1c895fcf86915e3d72a4ae2ab52e8c4823131a0b2a7a98"
-    },
-    {
-      "file": "obj/price-of-power.obj",
-      "triangles": 72308,
-      "sha256": "538261c832f6de09a6864919dc2abcb511c894f7d89ab95db05f5dfe6195fc8b"
-    },
-    {
-      "file": "obj/machina-mundi.obj",
-      "triangles": 73080,
-      "sha256": "6d87903a1767d1669a5aaa1a6cfaed64b4e58ce9f28a990fe0934eb9f76abff4"
-    },
-    {
-      "file": "obj/stadium.obj",
-      "triangles": 35664,
-      "sha256": "8b17d741978ebc44122c79c39dcf2de49b058af0779fd027a3911d7ba1433396"
-    },
-    {
-      "file": "obj/south-windsor-high-school.obj",
-      "triangles": 1786,
-      "sha256": "eb06dcead5483c58387744f3ea46116f488cb27c6ddb77aa5eea101660eb5eb3"
-    },
-    {
-      "file": "obj/blocky-cow.obj",
-      "triangles": 312,
-      "sha256": "aea21e86b78e9027ff41e9de23b54cd390b08c6d6e497589ff8f248f3df40454"
-    },
-    {
-      "file": "obj/head.stl",
-      "triangles": 141636,
-      "sha256": "2b61aa019c404987894d67f331927fbf1bea1c48ee3b4261053cb9037eb159cf"
     }
   ],
   "models": [
     {
-      "id": "capitol-at-auction",
-      "triangles": 23220,
-      "parts": 365,
-      "height": 2.4270373772078386,
-      "materials": [
-        "platform_ply",
-        "platform_edge",
-        "brass",
-        "paper",
-        "bill_ink",
-        "marble_weathered",
-        "marble",
-        "wire",
-        "bill_green",
-        "tag_card",
-        "black_acrylic",
-        "visitor_grey"
-      ]
-    },
-    {
-      "id": "capitol-marionette",
-      "triangles": 82624,
-      "parts": 2613,
-      "height": 3.8917688223031854,
-      "materials": [
-        "marble_grey",
-        "marble",
-        "dome_castiron",
-        "gilt",
-        "basalt_base",
-        "rubble",
-        "currency_soiled",
-        "currency",
-        "bronze_hand"
-      ]
-    },
-    {
       "id": "price-of-power",
+      "source": "obj/price-of-power.obj",
+      "materialSource": "obj/price-of-power.mtl",
       "triangles": 72308,
       "parts": 1041,
-      "height": 2.398384972926109,
+      "height": 2.997981309890747,
       "materials": [
         "stone_grey",
         "marble",
@@ -115,142 +60,152 @@
         "figure_ghost",
         "flag_fragment_red",
         "ground_ash"
-      ]
+      ],
+      "bounds": {
+        "min": [
+          -2.5,
+          0,
+          -2.5
+        ],
+        "max": [
+          2.5,
+          2.997981309890747,
+          2.5
+        ]
+      }
     },
     {
-      "id": "machina-mundi",
-      "triangles": 73080,
-      "parts": 231,
-      "height": 4,
+      "id": "liberty-tug-of-war (1)",
+      "source": "obj/liberty-tug-of-war (1).obj",
+      "materialSource": "obj/liberty-tug-of-war (1).mtl",
+      "triangles": 79096,
+      "parts": 220,
+      "height": 2.281428575515747,
       "materials": [
-        "cobalt_deep",
+        "patina",
+        "patinaDark",
         "gold",
-        "ivory",
-        "gold_pale",
-        "cobalt"
-      ]
+        "rope",
+        "stone",
+        "folk",
+        "folkWorn",
+        "skin",
+        "partyRed",
+        "partyBlue"
+      ],
+      "bounds": {
+        "min": [
+          -2.5,
+          0,
+          -1.035225749015808
+        ],
+        "max": [
+          2.5,
+          2.281428575515747,
+          1.035225749015808
+        ]
+      }
     },
     {
-      "id": "stadium",
-      "triangles": 35664,
-      "parts": 239,
-      "height": 0.758121520734154,
+      "id": "capitol-at-auction",
+      "source": "obj/capitol-at-auction.obj",
+      "materialSource": "obj/capitol-at-auction.mtl",
+      "triangles": 23220,
+      "parts": 365,
+      "height": 3.033796787261963,
       "materials": [
-        "concrete",
-        "turf",
-        "endzone_navy",
-        "field_paint",
-        "accent_red",
-        "goalpost",
-        "seating_navy",
-        "seating_navy_light",
-        "glazing",
-        "steel",
-        "white_panel",
-        "floodlight",
-        "screen_dark"
-      ]
+        "platform_ply",
+        "platform_edge",
+        "brass",
+        "paper",
+        "bill_ink",
+        "marble_weathered",
+        "marble",
+        "wire",
+        "bill_green",
+        "tag_card",
+        "black_acrylic",
+        "visitor_grey"
+      ],
+      "bounds": {
+        "min": [
+          -2.3167574405670166,
+          0,
+          -2.5
+        ],
+        "max": [
+          2.3167574405670166,
+          3.033796787261963,
+          2.5
+        ]
+      }
     },
     {
-      "id": "south-windsor-high-school",
-      "triangles": 1786,
-      "parts": 72,
-      "height": 1.27858200089389,
+      "id": "capitol-marionette",
+      "source": "obj/capitol-marionette.obj",
+      "materialSource": "obj/capitol-marionette.mtl",
+      "triangles": 82624,
+      "parts": 2613,
+      "height": 4.864710807800293,
       "materials": [
-        "paving",
-        "brick",
-        "roof_membrane",
-        "coping_gray",
-        "brick_dark",
-        "cream_band",
-        "maroon_sign",
-        "lettering_bobcats_mat",
-        "lettering_school_name_mat",
-        "gold_trim",
-        "medallion_mark_mat",
-        "column_white",
-        "glass",
-        "mullion"
-      ]
-    },
-    {
-      "id": "blocky-cow",
-      "triangles": 312,
-      "parts": 26,
-      "height": 3.3625218689544605,
-      "materials": [
-        "cowhide",
-        "cowhide_head",
-        "muzzle",
-        "nostril",
-        "eye_white",
-        "eye_pupil",
-        "horn",
-        "cowhide_leg",
-        "hoof",
-        "udder"
-      ]
-    },
-    {
-      "id": "head",
-      "triangles": 141636,
-      "parts": 1,
-      "height": 4,
-      "materials": [
-        "scan porcelain"
-      ]
+        "marble_grey",
+        "marble",
+        "dome_castiron",
+        "gilt",
+        "basalt_base",
+        "rubble",
+        "currency_soiled",
+        "currency",
+        "bronze_hand"
+      ],
+      "bounds": {
+        "min": [
+          -2.5,
+          0,
+          -1.5197280645370483
+        ],
+        "max": [
+          2.5,
+          4.864710807800293,
+          1.5197280645370483
+        ]
+      }
     }
   ],
   "sound": {
     "sampleRate": 48000,
     "channels": 2,
-    "peakDbFS": -24.29,
+    "peakDbFS": -22.96,
     "originalSynthesis": true,
     "constructionAccents": [
       {
-        "name": "platform_body",
-        "time": 23.15764496436368
+        "name": "pedestal_base",
+        "time": 44.22334014351544
       },
       {
-        "name": "terrace",
-        "time": 24.62441604622636
+        "name": "pedestal_cap",
+        "time": 45.84589789638525
       },
       {
-        "name": "main_block",
-        "time": 25.208140675604408
+        "name": "waist_rope",
+        "time": 51.34445729728431
       },
       {
-        "name": "main_cornice",
-        "time": 26.390674109351856
+        "name": "crown_band",
+        "time": 54.351674620297516
       },
       {
-        "name": "dome_podium",
-        "time": 26.625015680936304
-      },
-      {
-        "name": "drum",
-        "time": 26.942650675401275
-      },
-      {
-        "name": "dome_shell",
-        "time": 28.25172604607669
-      },
-      {
-        "name": "tholos",
-        "time": 29.25720215787278
-      },
-      {
-        "name": "statue_head",
-        "time": 30.123673105495797
+        "name": "torch_flame",
+        "time": 57.675284964319694
       }
     ]
   },
   "browserPlayback": {
-    "duration": 60,
+    "duration": 75,
     "width": 1920,
     "height": 1080,
     "ended": true,
-    "finalTime": 60,
+    "finalTime": 75,
     "error": null
   }
 }

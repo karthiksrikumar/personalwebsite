@@ -1,38 +1,22 @@
 [
   {
-    "name": "platform_body",
-    "time": 23.15764496436368
+    "name": "pedestal_base",
+    "time": 44.22334014351544
   },
   {
-    "name": "terrace",
-    "time": 24.62441604622636
+    "name": "pedestal_cap",
+    "time": 45.84589789638525
   },
   {
-    "name": "main_block",
-    "time": 25.208140675604408
+    "name": "waist_rope",
+    "time": 51.34445729728431
   },
   {
-    "name": "main_cornice",
-    "time": 26.390674109351856
+    "name": "crown_band",
+    "time": 54.351674620297516
   },
   {
-    "name": "dome_podium",
-    "time": 26.625015680936304
-  },
-  {
-    "name": "drum",
-    "time": 26.942650675401275
-  },
-  {
-    "name": "dome_shell",
-    "time": 28.25172604607669
-  },
-  {
-    "name": "tholos",
-    "time": 29.25720215787278
-  },
-  {
-    "name": "statue_head",
-    "time": 30.123673105495797
+    "name": "torch_flame",
+    "time": 57.675284964319694
   }
 ]

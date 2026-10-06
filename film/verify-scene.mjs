@@ -11,15 +11,18 @@ try{
  await page.goto('http://127.0.0.1:5196/film/index.html?width=640&height=360');
  await page.waitForFunction(()=>window.filmReady,{},{timeout:180000});
  const result=await page.evaluate(()=>{
-  const problems=[];
-  for(let frame=0;frame<1440;frame+=12){
+  const problems=[],croppedGeometry=[],collectionOverlaps=[];
+  for(let frame=0;frame<1800;frame+=12){
    window.renderFrame(frame/24);
    const hits=window.checkCameraClearance();
+   const composition=window.checkComposition();
+   if(composition.cropped.length)croppedGeometry.push({time:frame/24,items:composition.cropped});
+   if(composition.overlaps.length)collectionOverlaps.push({time:frame/24,items:composition.overlaps});
    if(hits.length)problems.push({time:frame/24,hits});
   }
-  return {sampledTimes:120,intervalSeconds:.5,nearPlaneRaySamples:5,nearPlaneIntersections:problems};
+  return {sampledTimes:150,intervalSeconds:.5,nearPlaneRaySamples:5,nearPlaneIntersections:problems,croppedGeometry,collectionOverlaps};
  });
- if(errors.length||result.nearPlaneIntersections.length)throw new Error(JSON.stringify({errors,...result}));
+ if(errors.length||result.nearPlaneIntersections.length||result.croppedGeometry.length||result.collectionOverlaps.length)throw new Error(JSON.stringify({errors,...result}));
  await writeFile('film/output/scene-verification.json',JSON.stringify({...result,loadingErrors:errors},null,2)+'\n');
  console.log(result);
 }finally{await browser.close();await server.close();}
