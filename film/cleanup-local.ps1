@@ -2,7 +2,7 @@ param([Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-f]{40}$')][string]$Co
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $gitRoot = $root.Replace('\','/')
-$artifact = 'film/output/political-sculptures-90s.mp4'
+$artifact = 'film/output/political-sculptures-105s.mp4'
 $report = Get-Content -LiteralPath (Join-Path $root 'film/output/verification.json') -Raw | ConvertFrom-Json
 $head = & git -C $root -c "safe.directory=$gitRoot" rev-parse HEAD
 if ($LASTEXITCODE -ne 0 -or $head.Trim() -ne $Commit) { throw 'Unexpected local commit' }
@@ -32,10 +32,11 @@ if ($remoteHash -ne $report.sha256) { throw 'GitHub video checksum differs; no l
 & git -C $root -c "safe.directory=$gitRoot" update-index --skip-worktree -- $artifact
 if ($LASTEXITCODE -ne 0) { throw 'Could not mark the video as intentionally absent' }
 $targets = @(
-    $artifact, 'film/output/political-sculptures-75s.mp4', 'film/output/political-sculptures-60s.mp4',
+    $artifact, 'film/output/political-sculptures-90s.mp4', 'film/output/political-sculptures-75s.mp4', 'film/output/political-sculptures-60s.mp4',
     '.cache/film-frames', '.cache/film-preview', '.cache/film75-frames', '.cache/film75-preview',
     '.cache/film90-frames', '.cache/film90-preview', '.cache/film90-score.wav',
     '.cache/film90-boundaries.jpg',
+    '.cache/film105-frames', '.cache/film105-preview', '.cache/film105-score.wav',
     '.cache/film-score.wav', '.cache/film75-score.wav', '.cache/film-contact.jpg', '.cache/film75-contact.jpg',
     '.cache/film-tools'
 )

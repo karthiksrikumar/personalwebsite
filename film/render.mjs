@@ -5,9 +5,9 @@ import path from 'node:path';
 const preview=process.argv.includes('--preview');
 const rangeArg=process.argv.find(arg=>arg.startsWith('--only='));
 const ranges=rangeArg?.slice(7).split(',').map(range=>range.split(':').map(Number));
-if(ranges?.some(([a,b])=>!Number.isFinite(a)||!Number.isFinite(b)||a<0||b>90||b<=a))throw new Error('Use --only=start:end[,start:end] with seconds between 0 and 90');
+if(ranges?.some(([a,b])=>!Number.isFinite(a)||!Number.isFinite(b)||a<0||b>105||b<=a))throw new Error('Use --only=start:end[,start:end] with seconds between 0 and 105');
 const width=preview?1280:1920,height=preview?720:1080;
-const directory=path.resolve(preview?'.cache/film90-preview':'.cache/film90-frames');
+const directory=path.resolve(preview?'.cache/film105-preview':'.cache/film105-frames');
 await mkdir(directory,{recursive:true});await mkdir('film/output',{recursive:true});
 const server=await createServer({configFile:false,server:{host:'127.0.0.1',port:5194,hmr:false},logLevel:'error'});
 await server.listen();
@@ -22,7 +22,7 @@ try{
  await writeFile('film/output/assembly-parts.json',JSON.stringify(await page.evaluate(()=>window.assemblyParts),null,2));
  await writeFile('film/output/assembly-events.json',JSON.stringify(await page.evaluate(()=>window.assemblyEvents),null,2));
  console.log(JSON.stringify(inventory.map(({id,triangles,height,parts})=>({id,triangles,height,parts}))));
- const times=preview?[46.875,50.625,54.375,58.125]:Array.from({length:2160},(_,i)=>i/24);
+ const times=preview?[60.4,61.9,63.3,64.1,65.6,67.1,67.9,69.4,70.9,71.6,73.1,74.6]:Array.from({length:2520},(_,i)=>i/24);
  const started=Date.now();
  for(let i=0;i<times.length;i++){
   if(ranges&&!ranges.some(([a,b])=>times[i]>=a&&times[i]<b))continue;

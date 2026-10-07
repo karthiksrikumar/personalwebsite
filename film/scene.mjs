@@ -97,9 +97,9 @@ for(const id of ids){
 }
 window.inventory=inventory;window.assemblyParts=partAnalysis[1].parts;
 window.assemblyEvents=['pedestal_base','pedestal_cap','waist_rope','crown_band','torch_flame'].map(name=>{
- const part=models[1].parts.find(p=>p.name===name);return {name,time:60+14.2*part.box.max.y/models[1].height};
+ const part=models[1].parts.find(p=>p.name===name);return {name,time:75+14.2*part.box.max.y/models[1].height};
 });
-window.filmCuts=[0,3,13.5,24,34.5,45,48.75,52.5,56.25,60,75,84,90];
+window.filmCuts=[0,3,13.5,24,34.5,45,48.75,52.5,56.25,60,62.5,63.75,66.25,67.5,70,71.25,73.75,75,90,99,105];
 const clamp=T.MathUtils.clamp,smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const lerp=T.MathUtils.lerp;
 function corners(box){return [0,1,2,3,4,5,6,7].map(i=>new T.Vector3(i&1?box.max.x:box.min.x,i&2?box.max.y:box.min.y,i&4?box.max.z:box.min.z));}
@@ -144,6 +144,31 @@ function insertDetail(index,seconds){
  fit(box,lerp([-30,-36,28,-30][index],[31,28,-25,32][index],u),lerp(7,18,u),lerp(1.45,1.16,u),lerp(60,72,u));
  checkBoxes=[{id:m.id,box}];
 }
+const orbitNames=[
+ [/^figure_2_(head|neck|torso|upperarm_.*|forearm_.*)$/, /^figure_2_(head|neck|torso|upperarm_.*|forearm_.*)$/],
+ [/^donkey_(barrel|neck|head|muzzle|ear_[lr])$/, /^donkey_(head|muzzle|ear_[lr])$/],
+ [/^price_tag_a_(card|string|figures)$/, /^price_tag_a_(card|figures)$/],
+ [/^dome_shell$|^tholos_(plinth|cupola|finial)$/, /^tholos_(cupola|finial)$/]
+];
+const orbitBoxes=models.map((m,i)=>orbitNames[i].map(pattern=>{
+ const box=new T.Box3();for(const part of m.parts)if(pattern.test(part.name))box.union(part.box);
+ if(box.isEmpty())throw new Error(`Missing orbit geometry: ${m.id}`);
+ return box.expandByScalar(.14);
+}));
+function nicheOrbit(index,seconds){
+ const m=models[index];m.group.visible=true;
+ if(seconds<2.5){
+  const u=seconds/2.5;currentShot=`${m.id}-full-360-orbit`;
+  fit(m.bounds,-55+360*u,18+9*Math.sin(Math.PI*u),1.17,38,m.bounds);
+  checkBoxes=[{id:m.id,box:m.bounds}];
+ }else{
+  const u=smooth((seconds-2.5)/1.25),box=orbitBoxes[index][1];
+  currentShot=`${m.id}-niche-pan-and-zoom`;
+  fit(box,lerp([-22,-8,-12,12][index],[18,17,16,-15][index],u),
+      lerp(14,24,u),lerp(1.65,1.22,u),65);
+  checkBoxes=[{id:m.id,box}];
+ }
+}
 function solo(index,seconds){
  const m=models[index];m.group.visible=true;
  let box=m.bounds,azimuth,elevation,margin,lens,keep=m.bounds;
@@ -175,9 +200,9 @@ function collection(u,end=false){
  rim.position.set(8,10,-7);rim.target.position.set(0,1,0);rim.angle=1.2;rim.intensity=430;
 }
 window.renderFrame=time=>{
- const t=clamp(time,0,90);models.forEach(m=>{m.group.visible=false;m.group.position.set(0,0,0);});
+ const t=clamp(time,0,105);models.forEach(m=>{m.group.visible=false;m.group.position.set(0,0,0);});
  isCollection=false;checkBoxes=[];printPlane.constant=100;printUniforms.height.value=100;printUniforms.active.value=0;
- capGroup.visible=t>=60&&t<74.2;ao.enabled=t<60||t>=75;bokeh.enabled=ao.enabled;
+ capGroup.visible=t>=75&&t<89.2;ao.enabled=t<75||t>=90;bokeh.enabled=ao.enabled;
  softbox.width=7;softbox.position.set(-6,6,7);softbox.lookAt(0,1,0);softbox.intensity=4.2;
  fill.width=6;fill.position.set(6,4,6);fill.lookAt(0,1,0);fill.intensity=2.7;ceiling.width=16;ceiling.intensity=2;
  scene.environmentIntensity=.42;renderer.toneMappingExposure=1.12;
@@ -186,17 +211,18 @@ window.renderFrame=time=>{
  if(t<3){currentShot='collection-opening';collection(t/3);}
  else if(t<45){const index=Math.min(3,Math.floor((t-3)/10.5));solo(index,t-3-index*10.5);}
  else if(t<60){insertDetail(Math.min(3,Math.floor((t-45)/3.75)),(t-45)%3.75);}
- else if(t<75){
+ else if(t<75){nicheOrbit(Math.min(3,Math.floor((t-60)/3.75)),(t-60)%3.75);}
+ else if(t<90){
   currentShot='liberty-layer-build';const m=models[1];m.group.visible=true;
-  const progress=clamp((t-60)/14.2,0,1),height=Math.ceil(progress*360)/360*m.height;
+  const progress=clamp((t-75)/14.2,0,1),height=Math.ceil(progress*360)/360*m.height;
   printPlane.constant=height;printUniforms.height.value=height;printUniforms.active.value=progress<1?1:0;
   capPlanes.forEach(cap=>{cap.position.y=height+.0001;});
-  fit(m.bounds,lerp(-35,42,smooth((t-60)/15)),lerp(22,10,smooth((t-60)/15)),1.13,40);checkBoxes=[{id:m.id,box:m.bounds}];
- }else if(t<84){
+  fit(m.bounds,lerp(-35,42,smooth((t-75)/15)),lerp(22,10,smooth((t-75)/15)),1.13,40);checkBoxes=[{id:m.id,box:m.bounds}];
+ }else if(t<99){
   currentShot='liberty-completed-detail';const m=models[1];m.group.visible=true;
-  const u=smooth((t-75)/9),box=detailBoxes[1][0];
+  const u=smooth((t-90)/9),box=detailBoxes[1][0];
   fit(box,lerp(-32,36,u),lerp(18,12,u),lerp(1.7,1.28,u),58);checkBoxes=[{id:m.id,box}];
- }else{currentShot='collection-finale';collection((t-84)/6,true);}
+ }else{currentShot='collection-finale';collection((t-99)/6,true);}
  composer.render();return {time:t,shot:currentShot};
 };
 window.checkComposition=()=>{
@@ -210,4 +236,4 @@ window.checkCameraClearance=()=>{
  const meshes=[];rig.traverseVisible(o=>{if(o.isMesh)meshes.push(o);});const hits=[];
  for(const [x,y] of [[0,0],[-1,-1],[1,-1],[-1,1],[1,1]]){ray.setFromCamera(new T.Vector2(x,y),camera);for(const h of ray.intersectObjects(meshes,false))hits.push({name:h.object.name,distance:h.distance});}return hits;
 };
-window.renderFrame(85);window.filmReady=true;
+window.renderFrame(100);window.filmReady=true;
