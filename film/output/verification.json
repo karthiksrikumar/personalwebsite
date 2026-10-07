@@ -1,15 +1,15 @@
 {
-  "durationSeconds": 105,
+  "durationSeconds": 120,
   "fps": 24,
-  "decodedFrames": 2520,
+  "decodedFrames": 2880,
   "width": 1920,
   "height": 1080,
   "videoCodec": "H.264",
   "pixelFormat": "yuv420p",
   "audioCodec": "AAC",
   "decodeErrors": [],
-  "bytes": 86833885,
-  "sha256": "bb91c427e348d304acd9d43ca4acbb52cca70c95b2e60816fdb9e3aa4b2a154c",
+  "bytes": 88270754,
+  "sha256": "f59fc4f6b58f392013b71a2313e54a38ddfc5eed3a33b74c4c3ae683f26c7a3a",
   "sourceTrianglesPreserved": true,
   "sources": [
     {
@@ -175,37 +175,58 @@
   "sound": {
     "sampleRate": 48000,
     "channels": 2,
-    "peakDbFS": -21.62,
+    "peakDbFS": -20.94,
     "originalSynthesis": true,
     "constructionAccents": [
       {
         "name": "pedestal_base",
-        "time": 76.14285723933679
+        "time": 91.14285723933679
       },
       {
         "name": "pedestal_cap",
-        "time": 77.65866777162307
+        "time": 92.65866777162307
       },
       {
         "name": "waist_rope",
-        "time": 82.7954798435156
+        "time": 97.7954798435156
       },
       {
         "name": "crown_band",
-        "time": 85.60485392159373
+        "time": 100.60485392159373
       },
       {
         "name": "torch_flame",
-        "time": 88.70980569035129
+        "time": 103.70980569035129
+      },
+      {
+        "name": "price-of-power-build",
+        "time": 75
+      },
+      {
+        "name": "capitol-at-auction-build",
+        "time": 80
+      },
+      {
+        "name": "capitol-marionette-build",
+        "time": 85
       }
     ]
   },
   "browserPlayback": {
-    "duration": 105,
+    "duration": 120,
     "width": 1920,
     "height": 1080,
+    "sampledTimes": [
+      0,
+      30,
+      60,
+      75,
+      90,
+      105,
+      119.5
+    ],
     "ended": true,
-    "finalTime": 105,
+    "finalTime": 120,
     "error": null
   }
 }

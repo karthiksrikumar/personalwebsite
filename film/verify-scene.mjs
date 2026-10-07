@@ -12,7 +12,7 @@ try{
  await page.waitForFunction(()=>window.filmReady,{},{timeout:180000});
  const result=await page.evaluate(()=>{
   const problems=[],croppedGeometry=[],collectionOverlaps=[];
-  for(let frame=0;frame<2520;frame+=12){
+  for(let frame=0;frame<2880;frame+=12){
    window.renderFrame(frame/24);
    const hits=window.checkCameraClearance();
    const composition=window.checkComposition();
@@ -20,7 +20,7 @@ try{
    if(composition.overlaps.length)collectionOverlaps.push({time:frame/24,items:composition.overlaps});
    if(hits.length)problems.push({time:frame/24,hits});
   }
-  return {sampledTimes:210,intervalSeconds:.5,nearPlaneRaySamples:5,nearPlaneIntersections:problems,croppedGeometry,collectionOverlaps};
+  return {sampledTimes:240,intervalSeconds:.5,nearPlaneRaySamples:5,nearPlaneIntersections:problems,croppedGeometry,collectionOverlaps};
  });
  if(errors.length||result.nearPlaneIntersections.length||result.croppedGeometry.length||result.collectionOverlaps.length)throw new Error(JSON.stringify({errors,...result}));
  await writeFile('film/output/scene-verification.json',JSON.stringify({...result,loadingErrors:errors},null,2)+'\n');

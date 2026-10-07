@@ -38,7 +38,6 @@ function spot(color,power,position){const l=new T.SpotLight(color,power,100,.8,.
 const key=spot('#fff1dc',135,[-5,8,5]);const rim=spot('#8abfff',240,[4,6,-5]);
 const printPlane=new T.Plane(new T.Vector3(0,-1,0),100);
 const printUniforms={height:{value:100},active:{value:0}};
-const capGroup=new T.Group(),capPlanes=[];
 const ids=['price-of-power','liberty-tug-of-war (1)','capitol-at-auction','capitol-marionette'];
 const models=[],inventory=[];
 const rig=new T.Group();scene.add(rig);
@@ -57,25 +56,22 @@ for(const id of ids){
   parts.push({name:o.name,box:geometry.boundingBox.clone()});triangles+=(geometry.index?.count||geometry.attributes.position.count)/3;
   const name=o.material.name;if(!batches.has(name))batches.set(name,{material:o.material,geometries:[]});batches.get(name).geometries.push(geometry);
  });
- const group=new T.Group(),sculpture=new T.Group();group.add(sculpture);rig.add(group);
+ const group=new T.Group(),sculpture=new T.Group(),capGroup=new T.Group(),capPlanes=[];
+ group.add(sculpture,capGroup);rig.add(group);
  const isLiberty=id.startsWith('liberty');
- if(isLiberty)group.add(capGroup);
  for(const [name,{material:m,geometries}] of batches){
   const metal=/gold|brass|bronze|gilt|wire|castiron|patina/i.test(name);
   const material=new T.MeshStandardMaterial({name,color:m.color,opacity:m.opacity,transparent:m.opacity<1,depthWrite:m.opacity>=1,
    roughness:metal?.37:.6,metalness:metal?.64:.025,side:T.DoubleSide});
-  if(isLiberty){
-   material.clippingPlanes=[printPlane];material.clipShadows=true;
-   material.onBeforeCompile=shader=>{
+  material.clippingPlanes=[printPlane];material.clipShadows=true;
+  material.onBeforeCompile=shader=>{
     shader.uniforms.printHeight=printUniforms.height;shader.uniforms.printActive=printUniforms.active;
     shader.vertexShader='varying float printedY;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\n printedY=(modelMatrix*vec4(transformed,1.0)).y;');
     shader.fragmentShader='varying float printedY; uniform float printHeight; uniform float printActive;\n'+shader.fragmentShader.replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
      totalEmissiveRadiance += printActive*vec3(0.32,0.15,0.035)*exp(-abs(printedY-printHeight)*220.0);`);
-   };
-  }
+  };
   const merged=mergeGeometries(geometries);
   const mesh=new T.Mesh(merged,material);mesh.castShadow=true;mesh.receiveShadow=true;sculpture.add(mesh);
-  if(isLiberty){
    const order=100+capPlanes.length*3;
    for(const [side,operation] of [[T.BackSide,T.IncrementWrapStencilOp],[T.FrontSide,T.DecrementWrapStencilOp]]){
     const stencil=new T.MeshBasicMaterial({side,depthWrite:false,depthTest:false,colorWrite:false,clippingPlanes:[printPlane],stencilWrite:true,stencilFunc:T.AlwaysStencilFunc,stencilFail:operation,stencilZFail:operation,stencilZPass:operation});
@@ -83,7 +79,6 @@ for(const id of ids){
    }
    const capMaterial=new T.MeshStandardMaterial({color:m.color,metalness:metal?.64:.025,roughness:.6,side:T.DoubleSide,stencilWrite:true,stencilRef:0,stencilFunc:T.NotEqualStencilFunc,stencilFail:T.ReplaceStencilOp,stencilZFail:T.ReplaceStencilOp,stencilZPass:T.ReplaceStencilOp});
    const cap=new T.Mesh(new T.PlaneGeometry(8,8),capMaterial);cap.rotation.x=-Math.PI/2;cap.renderOrder=order+1;cap.onAfterRender=()=>renderer.clearStencil();capGroup.add(cap);capPlanes.push(cap);
-  }
  }
  const bounds=new T.Box3().setFromObject(sculpture),extent=bounds.getSize(new T.Vector3());
  const plinth=new T.Mesh(new T.BoxGeometry(extent.x+.45,.2,extent.z+.45),new T.MeshStandardMaterial({color:'#45474a',roughness:.43,metalness:.22}));
@@ -91,15 +86,15 @@ for(const id of ids){
  const trim=new T.Mesh(new T.BoxGeometry(extent.x+.47,.018,extent.z+.47),new T.MeshStandardMaterial({color:'#b58d54',metalness:.7,roughness:.38}));trim.position.y=-.135;group.add(trim);
  const details=parts.filter((p,i)=>isLiberty?i<76:id==='price-of-power'?/main_block|portico|roof|flame/.test(p.name):id==='capitol-at-auction'?/main_|wing_|portico_|dome_|drum|tholos|statue|terrace|step/.test(p.name):true);
  const detailBox=new T.Box3();details.forEach(p=>detailBox.union(p.box));
- models.push({id,group,sculpture,bounds,detailBox,height:extent.y,parts});
+ models.push({id,group,sculpture,capGroup,capPlanes,bounds,detailBox,height:extent.y,parts});
  inventory.push({id,source:`obj/${id}.obj`,materialSource:`obj/${id}.mtl`,triangles,parts:parts.length,height:extent.y,materials:[...batches.keys()],bounds:{min:bounds.min.toArray(),max:bounds.max.toArray()}});
  partAnalysis.push({id,parts:parts.map(p=>({name:p.name,min:p.box.min.toArray(),max:p.box.max.toArray()}))});
 }
 window.inventory=inventory;window.assemblyParts=partAnalysis[1].parts;
 window.assemblyEvents=['pedestal_base','pedestal_cap','waist_rope','crown_band','torch_flame'].map(name=>{
- const part=models[1].parts.find(p=>p.name===name);return {name,time:75+14.2*part.box.max.y/models[1].height};
+ const part=models[1].parts.find(p=>p.name===name);return {name,time:90+14.2*part.box.max.y/models[1].height};
 });
-window.filmCuts=[0,3,13.5,24,34.5,45,48.75,52.5,56.25,60,62.5,63.75,66.25,67.5,70,71.25,73.75,75,90,99,105];
+window.filmCuts=[0,3,13.5,24,34.5,45,48.75,52.5,56.25,60,62.5,63.75,66.25,67.5,70,71.25,73.75,75,80,85,90,105,114,120];
 const clamp=T.MathUtils.clamp,smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const lerp=T.MathUtils.lerp;
 function corners(box){return [0,1,2,3,4,5,6,7].map(i=>new T.Vector3(i&1?box.max.x:box.min.x,i&2?box.max.y:box.min.y,i&4?box.max.z:box.min.z));}
@@ -200,9 +195,9 @@ function collection(u,end=false){
  rim.position.set(8,10,-7);rim.target.position.set(0,1,0);rim.angle=1.2;rim.intensity=430;
 }
 window.renderFrame=time=>{
- const t=clamp(time,0,105);models.forEach(m=>{m.group.visible=false;m.group.position.set(0,0,0);});
+ const t=clamp(time,0,120);models.forEach(m=>{m.group.visible=false;m.group.position.set(0,0,0);m.capGroup.visible=false;});
  isCollection=false;checkBoxes=[];printPlane.constant=100;printUniforms.height.value=100;printUniforms.active.value=0;
- capGroup.visible=t>=75&&t<89.2;ao.enabled=t<75||t>=90;bokeh.enabled=ao.enabled;
+ ao.enabled=t<75||t>=105;bokeh.enabled=ao.enabled;
  softbox.width=7;softbox.position.set(-6,6,7);softbox.lookAt(0,1,0);softbox.intensity=4.2;
  fill.width=6;fill.position.set(6,4,6);fill.lookAt(0,1,0);fill.intensity=2.7;ceiling.width=16;ceiling.intensity=2;
  scene.environmentIntensity=.42;renderer.toneMappingExposure=1.12;
@@ -213,16 +208,26 @@ window.renderFrame=time=>{
  else if(t<60){insertDetail(Math.min(3,Math.floor((t-45)/3.75)),(t-45)%3.75);}
  else if(t<75){nicheOrbit(Math.min(3,Math.floor((t-60)/3.75)),(t-60)%3.75);}
  else if(t<90){
+  const index=[0,2,3][Math.min(2,Math.floor((t-75)/5))],m=models[index],local=(t-75)%5;
+  currentShot=`${m.id}-solid-layer-build`;m.group.visible=true;
+  const progress=clamp(local/4.25,0,1),height=Math.ceil(progress*240)/240*m.height;
+  printPlane.constant=progress<1?height:100;printUniforms.height.value=height;printUniforms.active.value=progress<1?1:0;
+  m.capGroup.visible=progress<1&&progress>0;
+  m.capPlanes.forEach(cap=>{cap.position.y=height+.0001;});
+  fit(m.bounds,lerp(-30,35,smooth(local/5)),lerp(24,14,smooth(local/5)),1.18,40);
+  checkBoxes=[{id:m.id,box:m.bounds}];
+ }else if(t<105){
   currentShot='liberty-layer-build';const m=models[1];m.group.visible=true;
-  const progress=clamp((t-75)/14.2,0,1),height=Math.ceil(progress*360)/360*m.height;
+  const progress=clamp((t-90)/14.2,0,1),height=Math.ceil(progress*360)/360*m.height;
   printPlane.constant=height;printUniforms.height.value=height;printUniforms.active.value=progress<1?1:0;
-  capPlanes.forEach(cap=>{cap.position.y=height+.0001;});
-  fit(m.bounds,lerp(-35,42,smooth((t-75)/15)),lerp(22,10,smooth((t-75)/15)),1.13,40);checkBoxes=[{id:m.id,box:m.bounds}];
- }else if(t<99){
+  m.capGroup.visible=progress<1&&progress>0;
+  m.capPlanes.forEach(cap=>{cap.position.y=height+.0001;});
+  fit(m.bounds,lerp(-35,42,smooth((t-90)/15)),lerp(22,10,smooth((t-90)/15)),1.13,40);checkBoxes=[{id:m.id,box:m.bounds}];
+ }else if(t<114){
   currentShot='liberty-completed-detail';const m=models[1];m.group.visible=true;
-  const u=smooth((t-90)/9),box=detailBoxes[1][0];
+  const u=smooth((t-105)/9),box=detailBoxes[1][0];
   fit(box,lerp(-32,36,u),lerp(18,12,u),lerp(1.7,1.28,u),58);checkBoxes=[{id:m.id,box}];
- }else{currentShot='collection-finale';collection((t-99)/6,true);}
+ }else{currentShot='collection-finale';collection((t-114)/6,true);}
  composer.render();return {time:t,shot:currentShot};
 };
 window.checkComposition=()=>{
@@ -236,4 +241,4 @@ window.checkCameraClearance=()=>{
  const meshes=[];rig.traverseVisible(o=>{if(o.isMesh)meshes.push(o);});const hits=[];
  for(const [x,y] of [[0,0],[-1,-1],[1,-1],[-1,1],[1,1]]){ray.setFromCamera(new T.Vector2(x,y),camera);for(const h of ray.intersectObjects(meshes,false))hits.push({name:h.object.name,distance:h.distance});}return hits;
 };
-window.renderFrame(100);window.filmReady=true;
+window.renderFrame(115);window.filmReady=true;

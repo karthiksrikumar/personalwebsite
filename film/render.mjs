@@ -3,31 +3,33 @@ import { createServer } from 'vite';
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import path from 'node:path';
 const preview=process.argv.includes('--preview');
+const force=process.argv.includes('--force');
 const rangeArg=process.argv.find(arg=>arg.startsWith('--only='));
 const ranges=rangeArg?.slice(7).split(',').map(range=>range.split(':').map(Number));
-if(ranges?.some(([a,b])=>!Number.isFinite(a)||!Number.isFinite(b)||a<0||b>105||b<=a))throw new Error('Use --only=start:end[,start:end] with seconds between 0 and 105');
+if(ranges?.some(([a,b])=>!Number.isFinite(a)||!Number.isFinite(b)||a<0||b>120||b<=a))throw new Error('Use --only=start:end[,start:end] with seconds between 0 and 120');
 const width=preview?1280:1920,height=preview?720:1080;
-const directory=path.resolve(preview?'.cache/film105-preview':'.cache/film105-frames');
+const directory=path.resolve(preview?'.cache/film120-preview':'.cache/film120-frames');
 await mkdir(directory,{recursive:true});await mkdir('film/output',{recursive:true});
 const server=await createServer({configFile:false,server:{host:'127.0.0.1',port:5194,hmr:false},logLevel:'error'});
 await server.listen();
+const port=server.httpServer.address().port;
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||chromium.executablePath(),args:['--enable-webgl','--ignore-gpu-blocklist']});
 try{
  const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
  page.on('pageerror',error=>console.error(error));
- await page.goto(`http://127.0.0.1:5194/film/index.html?width=${width}&height=${height}`);
- await page.waitForFunction(()=>window.filmReady,{},{timeout:180000});
+ await page.goto(`http://127.0.0.1:${port}/film/index.html?width=${width}&height=${height}`);
+ await page.waitForFunction(()=>window.filmReady,{},{timeout:60000});
  const inventory=await page.evaluate(()=>window.inventory);
  await writeFile('film/output/model-inventory.json',JSON.stringify(inventory,null,2));
  await writeFile('film/output/assembly-parts.json',JSON.stringify(await page.evaluate(()=>window.assemblyParts),null,2));
  await writeFile('film/output/assembly-events.json',JSON.stringify(await page.evaluate(()=>window.assemblyEvents),null,2));
  console.log(JSON.stringify(inventory.map(({id,triangles,height,parts})=>({id,triangles,height,parts}))));
- const times=preview?[60.4,61.9,63.3,64.1,65.6,67.1,67.9,69.4,70.9,71.6,73.1,74.6]:Array.from({length:2520},(_,i)=>i/24);
+ const times=preview?[75.5,77.5,79.5,80.5,82.5,84.5,85.5,87.5,89.5]:Array.from({length:2880},(_,i)=>i/24);
  const started=Date.now();
  for(let i=0;i<times.length;i++){
   if(ranges&&!ranges.some(([a,b])=>times[i]>=a&&times[i]<b))continue;
   const file=path.join(directory,`${String(i).padStart(5,'0')}.jpg`);
-  if(!preview&&!ranges){try{await access(file);continue;}catch{}}
+  if(!preview&&!force){try{await access(file);continue;}catch{}}
   const data=await page.evaluate(({t,preview})=>{
    const canvas=document.querySelector('canvas');
    if(preview){window.renderFrame(t);return canvas.toDataURL('image/jpeg',.96).split(',')[1];}
