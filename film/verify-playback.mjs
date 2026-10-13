@@ -11,10 +11,10 @@ try{
  const playback=await page.evaluate(async()=>{
   const video=document.createElement('video');video.muted=true;video.preload='auto';
   document.body.replaceChildren(video);
-  video.src='/film/output/political-sculptures-120s.mp4';
+  video.src='/film/output/political-sculptures-135s.mp4';
   await new Promise((resolve,reject)=>{video.onloadedmetadata=resolve;video.onerror=()=>reject(new Error('Video metadata failed'));});
   const metadata={duration:video.duration,width:video.videoWidth,height:video.videoHeight};
-  const sampledTimes=[0,30,60,75,90,105,119.5];
+  const sampledTimes=[0,30,60,75,90,105,110,115,120,134.5];
   for(const time of sampledTimes){
    if(time===0)continue;
    await new Promise((resolve,reject)=>{
@@ -32,7 +32,7 @@ try{
   await video.play();await ended;
   return {...metadata,sampledTimes,ended:video.ended,finalTime:video.currentTime,error:video.error?.message||null};
  });
- if(playback.duration!==120||playback.width!==1920||playback.height!==1080||!playback.ended||playback.error)throw new Error(JSON.stringify(playback));
+ if(playback.duration!==135||playback.width!==1920||playback.height!==1080||!playback.ended||playback.error)throw new Error(JSON.stringify(playback));
  const file='film/output/verification.json', report=JSON.parse(await readFile(file,'utf8'));
  report.browserPlayback=playback;
  await writeFile(file,JSON.stringify(report,null,2)+'\n');

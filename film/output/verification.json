@@ -1,15 +1,15 @@
 {
-  "durationSeconds": 120,
+  "durationSeconds": 135,
   "fps": 24,
-  "decodedFrames": 2880,
+  "decodedFrames": 3240,
   "width": 1920,
   "height": 1080,
   "videoCodec": "H.264",
   "pixelFormat": "yuv420p",
   "audioCodec": "AAC",
   "decodeErrors": [],
-  "bytes": 88270754,
-  "sha256": "f59fc4f6b58f392013b71a2313e54a38ddfc5eed3a33b74c4c3ae683f26c7a3a",
+  "bytes": 82267530,
+  "sha256": "5cc53592f7333c8747ac5e3f443108daf6efe95fce30127cf0cae25f79355d2d",
   "sourceTrianglesPreserved": true,
   "sources": [
     {
@@ -175,7 +175,7 @@
   "sound": {
     "sampleRate": 48000,
     "channels": 2,
-    "peakDbFS": -20.94,
+    "peakDbFS": -21,
     "originalSynthesis": true,
     "constructionAccents": [
       {
@@ -213,7 +213,7 @@
     ]
   },
   "browserPlayback": {
-    "duration": 120,
+    "duration": 135,
     "width": 1920,
     "height": 1080,
     "sampledTimes": [
@@ -223,10 +223,13 @@
       75,
       90,
       105,
-      119.5
+      110,
+      115,
+      120,
+      134.5
     ],
     "ended": true,
-    "finalTime": 120,
+    "finalTime": 135,
     "error": null
   }
 }

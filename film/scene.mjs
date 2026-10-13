@@ -94,7 +94,7 @@ window.inventory=inventory;window.assemblyParts=partAnalysis[1].parts;
 window.assemblyEvents=['pedestal_base','pedestal_cap','waist_rope','crown_band','torch_flame'].map(name=>{
  const part=models[1].parts.find(p=>p.name===name);return {name,time:90+14.2*part.box.max.y/models[1].height};
 });
-window.filmCuts=[0,3,13.5,24,34.5,45,48.75,52.5,56.25,60,62.5,63.75,66.25,67.5,70,71.25,73.75,75,80,85,90,105,114,120];
+window.filmCuts=[0,3,13.5,24,34.5,45,48.75,52.5,56.25,60,62.5,63.75,66.25,67.5,70,71.25,73.75,75,80,85,90,105,108.75,112.5,116.25,120,129,135];
 const clamp=T.MathUtils.clamp,smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const lerp=T.MathUtils.lerp;
 function corners(box){return [0,1,2,3,4,5,6,7].map(i=>new T.Vector3(i&1?box.max.x:box.min.x,i&2?box.max.y:box.min.y,i&4?box.max.z:box.min.z));}
@@ -164,6 +164,25 @@ function nicheOrbit(index,seconds){
   checkBoxes=[{id:m.id,box}];
  }
 }
+// A post-assembly inspection: each pass travels around a previously unseen feature.
+const inspectionNames=[
+ /^portico_column_[12]_(necking|echinus|volute_[lr]|abacus)$/,
+ /^shackle$|^chain_link$/,
+ /^statue_(pedestal|body|head|arms)$/,
+ /^hand_1_(palm|thenar|finger[0-3]_ph[0-2])$/
+];
+const inspectionBoxes=models.map((m,i)=>{
+ const box=new T.Box3();for(const part of m.parts)if(inspectionNames[i].test(part.name))box.union(part.box);
+ if(box.isEmpty())throw new Error(`Missing inspection geometry: ${m.id}`);
+ return box.expandByScalar(.22);
+});
+function inspection(index,seconds){
+ const m=models[index],u=smooth(seconds/3.75),box=inspectionBoxes[index];m.group.visible=true;
+ currentShot=`${m.id}-post-build-inspection`;
+ fit(box,lerp([-52,48,130,46][index],[52,-46,230,-50][index],u),
+     lerp(12,28,u),lerp(1.75,1.24,u),lerp(46,64,u));
+ checkBoxes=[{id:m.id,box}];
+}
 function solo(index,seconds){
  const m=models[index];m.group.visible=true;
  let box=m.bounds,azimuth,elevation,margin,lens,keep=m.bounds;
@@ -195,7 +214,7 @@ function collection(u,end=false){
  rim.position.set(8,10,-7);rim.target.position.set(0,1,0);rim.angle=1.2;rim.intensity=430;
 }
 window.renderFrame=time=>{
- const t=clamp(time,0,120);models.forEach(m=>{m.group.visible=false;m.group.position.set(0,0,0);m.capGroup.visible=false;});
+ const t=clamp(time,0,135);models.forEach(m=>{m.group.visible=false;m.group.position.set(0,0,0);m.capGroup.visible=false;});
  isCollection=false;checkBoxes=[];printPlane.constant=100;printUniforms.height.value=100;printUniforms.active.value=0;
  ao.enabled=t<75||t>=105;bokeh.enabled=ao.enabled;
  softbox.width=7;softbox.position.set(-6,6,7);softbox.lookAt(0,1,0);softbox.intensity=4.2;
@@ -223,11 +242,12 @@ window.renderFrame=time=>{
   m.capGroup.visible=progress<1&&progress>0;
   m.capPlanes.forEach(cap=>{cap.position.y=height+.0001;});
   fit(m.bounds,lerp(-35,42,smooth((t-90)/15)),lerp(22,10,smooth((t-90)/15)),1.13,40);checkBoxes=[{id:m.id,box:m.bounds}];
- }else if(t<114){
+ }else if(t<120){inspection(Math.min(3,Math.floor((t-105)/3.75)),(t-105)%3.75);
+ }else if(t<129){
   currentShot='liberty-completed-detail';const m=models[1];m.group.visible=true;
-  const u=smooth((t-105)/9),box=detailBoxes[1][0];
+  const u=smooth((t-120)/9),box=detailBoxes[1][0];
   fit(box,lerp(-32,36,u),lerp(18,12,u),lerp(1.7,1.28,u),58);checkBoxes=[{id:m.id,box}];
- }else{currentShot='collection-finale';collection((t-114)/6,true);}
+ }else{currentShot='collection-finale';collection((t-129)/6,true);}
  composer.render();return {time:t,shot:currentShot};
 };
 window.checkComposition=()=>{
@@ -241,4 +261,4 @@ window.checkCameraClearance=()=>{
  const meshes=[];rig.traverseVisible(o=>{if(o.isMesh)meshes.push(o);});const hits=[];
  for(const [x,y] of [[0,0],[-1,-1],[1,-1],[-1,1],[1,1]]){ray.setFromCamera(new T.Vector2(x,y),camera);for(const h of ray.intersectObjects(meshes,false))hits.push({name:h.object.name,distance:h.distance});}return hits;
 };
-window.renderFrame(115);window.filmReady=true;
+window.renderFrame(130);window.filmReady=true;

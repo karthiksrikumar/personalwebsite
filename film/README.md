@@ -1,8 +1,8 @@
-# Four political sculptures — 120-second film
+# Four political sculptures — 135-second film
 
-[Watch or download the film on GitHub](https://github.com/karthiksrikumar/personalwebsite/raw/refs/heads/main/film/output/political-sculptures-120s.mp4).
+[Watch or download the film on GitHub](https://github.com/karthiksrikumar/personalwebsite/raw/refs/heads/main/film/output/political-sculptures-135s.mp4).
 
-1920 × 1080, 24 fps, 120 seconds, H.264 with stereo AAC audio. The film includes exactly **Price of Power, Liberty Tug of War, Capitol at Auction, and Capitol Marionette**. No text overlays are added.
+1920 × 1080, 24 fps, 135 seconds, H.264 with stereo AAC audio. The film includes exactly **Price of Power, Liberty Tug of War, Capitol at Auction, and Capitol Marionette**. No text overlays are added.
 
 ![The four-piece collection](output/poster.jpg)
 
@@ -31,8 +31,12 @@ Each sculpture now gets a bottom-up build through its actual source meshes: five
 | 80–85s | Capitol at Auction forms from its base upward, with a camera arc |
 | 85–90s | Capitol Marionette forms from its base upward, with a camera arc |
 | 90–105s | Liberty forms from the bottom upward in fixed, solid layers, with a camera arc |
-| 105–114s | Completed Liberty, with a moving crown detail shot |
-| 114–120s | Short four-piece finale; fade at 119s |
+| 105–108.75s | Post-build moving inspection of Price of Power's portico capitals |
+| 108.75–112.5s | Liberty's shackle and chain from changing angles |
+| 112.5–116.25s | Capitol at Auction's rooftop statue and pedestal |
+| 116.25–120s | Another marionette hand and its articulated fingers |
+| 120–129s | Completed Liberty, with a moving crown detail shot |
+| 129–135s | Short four-piece finale; fade at 133s |
 
 The close-ups were selected from named components in `geometry-analysis.json`, rather than arbitrary camera targets. The new insert first circles each entire sculpture through 360 degrees, keeping its full measured bounds in frame. It then cuts to a close, panning view of another small component. The earlier detail moves follow the tracking-shot principle of keeping a clear subject while revealing it through changing perspective; see [Adobe's tracking-shot guide](https://www.adobe.com/creativecloud/video/production/cinematography/camera-shots-and-angles/tracking-shot.html). The exact selection patterns and camera paths are in `scene.mjs`.
 
@@ -62,16 +66,16 @@ python -m pip install numpy pillow imageio-ffmpeg
 python film/analyze-models.py
 node film/render.mjs --preview
 node film/verify-scene.mjs
-git restore --source=931444ab1320201a6537b9de2b4aa5e715f66416 -- film/output/political-sculptures-105s.mp4
-python film/extend-frames-120.py
-node film/render.mjs --only=75:90
+git restore --source=fe38f64cfe33f6132207617ff6b817319f8885a1 -- film/output/political-sculptures-120s.mp4
+python film/extend-frames-135.py
+node film/render.mjs --only=105:120
 python film/finish.py
 node film/verify-playback.mjs
 ```
 
 Set `CHROME_PATH` to use an existing Chromium executable. Set `FFMPEG_PATH` to use an existing FFmpeg executable with libx264 and AAC support. The encoder is otherwise found through the Python `imageio_ffmpeg` package or a project-local installation in `.cache/film-tools`.
 
-Previews go to `.cache/film120-preview`. `extend-frames-120.py` checks the SHA-256 of the prior verified 105-second film, extracts its 2,520 frames, and shifts the last 30 seconds after a 360-frame gap. The new 15-second construction montage fills that gap. This retains the earlier edit without spending render time on unchanged shots; the original footage is decoded and encoded again, so it incurs one additional compression generation. The final frame directory is `.cache/film120-frames` with 2,880 JPEGs. Interrupted new-shot renders can resume with the same `--only=75:90` command. Clear that exact frame directory before rebuilding from scratch after scene changes.
+Previews go to `.cache/film135-preview`. `extend-frames-135.py` checks the SHA-256 of the prior verified 120-second film, extracts its 2,880 frames, and shifts the last 15 seconds after a 360-frame gap. The new 15-second post-build inspection montage fills that gap. This retains the earlier edit without spending render time on unchanged shots; the original footage is decoded and encoded again, so it incurs one additional compression generation. The final frame directory is `.cache/film135-frames` with 3,240 JPEGs. Interrupted new-shot renders can resume with the same `--only=105:120` command. Clear that exact frame directory before rebuilding from scratch after scene changes.
 
 `finish.py` generates an original evolving ambient score with accents aligned to the layer build, encodes the MP4 with BT.709 color metadata, and fully decodes both streams to check the result. No outside music recordings are used.
 
@@ -82,7 +86,7 @@ Previews go to `.cache/film120-preview`. `extend-frames-120.py` checks the SHA-2
 - `output/assembly-parts.json` and `assembly-events.json`: normalized Liberty bounds and sound cue times.
 - `output/scene-verification.json`: asset-loading, framing, separation, and near-camera checks sampled every half second.
 - `output/contact-sheet.jpg`: representative frames, including several stages of construction.
-- `output/verification.json`: 120-second duration, 2,880 decoded frames, resolution, source/video checksums, audio levels, and browser playback through the ended event.
+- `output/verification.json`: 135-second duration, 3,240 decoded frames, resolution, source/video checksums, audio levels, and browser playback through the ended event.
 
 Sampled camera checks supplement visual review; they are not an exhaustive geometric collision proof.
 
@@ -90,11 +94,11 @@ Sampled camera checks supplement visual review; they are not an exhaustive geome
 
 After committing and pushing, `cleanup-local.ps1 -Commit <full-commit-sha>` verifies that GitHub `main` matches the commit, then streams the actual remote MP4 through SHA-256 and compares it with the verified local video. Only after those checks does it remove local video copies, old and new film frame caches, scratch soundtracks, preview caches, and the cached encoder. Models, source scripts, and small review/verification artifacts remain.
 
-The committed 120-second MP4 is marked `skip-worktree` before its local copy is removed, so local cleanup does not delete the GitHub artifact. Download it from the link above, or restore the working copy with:
+The committed 135-second MP4 is marked `skip-worktree` before its local copy is removed, so local cleanup does not delete the GitHub artifact. Download it from the link above, or restore the working copy with:
 
 ```sh
-git update-index --no-skip-worktree film/output/political-sculptures-120s.mp4
-git restore --source=HEAD -- film/output/political-sculptures-120s.mp4
+git update-index --no-skip-worktree film/output/political-sculptures-135s.mp4
+git restore --source=HEAD -- film/output/political-sculptures-135s.mp4
 ```
 
 Git history is retained, so the Git object database still contains committed video data.
