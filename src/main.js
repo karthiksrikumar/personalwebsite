@@ -77,9 +77,21 @@ function bindCitations() {
 function equityPage() {
   cleanup();
   const stories = [
-    { title: 'Machina Mundi', claim: 'AI education begins with access.', body: 'Machina Mundi brings hands-on AI programs to Hartford, East Hartford, Manchester, and South Windsor. Students test models and ask whose experiences those systems represent. The work reaches into dialect research and education policy with local partners and elected officials.', links: [['Visit Machina Mundi', 'https://machinamundi.vercel.app'], ['Source & projects', 'https://github.com/karthiksrikumar/MachinaMundiWebsite']] },
-    { title: 'ConvoAAVE', claim: 'Speech should not have to change to be understood.', body: 'Developed with community partners in Hartford and East Hartford, this African American Vernacular English corpus preserves the grammar of more than 80,000 transcribed words. Written transcripts are public; contributor recordings remain restricted. Princeton Prize in Race Relations regional finalist, 2026.', links: [['Explore the corpus', 'https://github.com/karthiksrikumar/ConvoAAVE-POLLEN'], ['Project & methodology', 'https://machinamundi.vercel.app/convoaave']] },
-    { title: 'Student AI Squad', claim: 'Students belong in decisions about classroom AI.', body: 'As a South Windsor Student AI Squad co-lead, I work with educators and speak at Board of Education meetings. My videos helped introduce AI tools to 900 students; by March 2025, student use reached 2,400. I also helped educators build tools used in 72% of district classrooms and joined an AI in Education panel for New England educators.', links: [['South Windsor Public Schools', 'https://www.southwindsorschools.org/']] },
+    { title: 'Machina Mundi', claim: 'AI education begins with access.', sections: [
+      ['Learning together', 'Machina Mundi works across Hartford, East Hartford, Manchester, and South Windsor to make AI education more accessible. With Code Ninjas, the YMCA, and host schools, the team runs student-led sessions that use practical activities and games to help young people explore AI and its uses in school.'],
+      ['From the classroom to research', 'Questions raised by students about voice assistants and captions led to ConvoAAVE, a community-built speech corpus. The organization connects that research to broader conversations about who is represented in the data behind AI systems.'],
+      ['Education and policy', 'The work also reaches beyond individual programs. Machina Mundi has developed a discussion draft for an AI Equity Grant provision to support AI education in underserved schools. In 2026, the organization was named a regional finalist for the Princeton Prize in Race Relations.']
+    ], links: [['Visit Machina Mundi', 'https://machinamundi.vercel.app'], ['AI Pathways Camp', 'https://machinamundi.vercel.app/camp'], ['Source & projects', 'https://github.com/karthiksrikumar/MachinaMundiWebsite']] },
+    { title: 'ConvoAAVE', claim: 'Speech should not have to change to be understood.', sections: [
+      ['The problem', 'Automatic speech recognition does not work equally well for all speakers. When systems misinterpret African American Vernacular English, the effects extend to captions, dictation, voice assistants, and other tools people use to communicate.'],
+      ['The corpus', 'ConvoAAVE brings together more than 80,000 words of transcribed conversation and narrative speech collected with community partners in Hartford and East Hartford. The transcripts preserve speech as spoken and document grammatical constructions such as habitual be, stressed been, and negative concord.'],
+      ['Consent and access', 'Participation was voluntary and revocable. The written transcripts and methodology are public, while recordings remain under restricted access to protect the people whose voices and stories are represented.']
+    ], links: [['Explore the corpus', 'https://github.com/karthiksrikumar/ConvoAAVE'], ['Project & methodology', 'https://machinamundi.vercel.app/convoaave']] },
+    { title: 'Student AI Squad', claim: 'Students belong in decisions about classroom AI.', sections: [
+      ['A student perspective', 'As a co-lead of the South Windsor Student AI Squad, I work with educators and bring student perspectives to conversations about how AI is used in school. That includes speaking at Board of Education meetings and discussing classroom practice with educators.'],
+      ['Making tools usable', 'My videos helped introduce AI tools to 900 students. By March 2025, student use reached 2,400. I also helped educators build tools used in 72% of district classrooms.'],
+      ['Sharing the work', 'I joined an AI in Education panel for New England educators, bringing the experience of working with students and teachers into a wider discussion about classroom technology.']
+    ], links: [['South Windsor Public Schools', 'https://www.southwindsorschools.org/']] },
   ];
   const slides = [...(photos['machina-mundi'] || [])];
   const fallback = { src: 'media/machina-mundi-logo.png', alt: 'Machina Mundi emblem' };
@@ -95,7 +107,7 @@ function equityPage() {
   function showStory(index) {
     selected = index;
     const story = stories[index];
-    panel.innerHTML = `<p class="eyebrow">0${index + 1} / 03</p><h2>${story.title}</h2><p class="equity-thesis">${story.claim}</p><p class="equity-body">${story.body}</p><div class="link-row">${story.links.map(l => external(...l)).join('')}</div>`;
+    panel.innerHTML = `<p class="eyebrow">0${index + 1} / 03</p><h2>${story.title}</h2><p class="equity-thesis">${story.claim}</p><div class="equity-sections">${story.sections.map(([heading, body]) => `<section><h3>${heading}</h3><p>${body}</p></section>`).join('')}</div><div class="link-row">${story.links.map(l => external(...l)).join('')}</div>`;
     panel.setAttribute('aria-labelledby', `equity-tab-${index}`);
     media.hidden = index !== 0;
     feature.classList.toggle('text-only', index !== 0);
