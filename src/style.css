@@ -108,3 +108,5 @@ body[data-page="home"] .orbit-arrow{margin-left:auto}
 
 .accomplishment-with-image{display:flex;align-items:center;gap:9px}
 .accomplishment-with-image img{width:26px;height:26px;flex:none;object-fit:contain;border-radius:3px}
+/* Research-style notation in the OATNet project detail. */
+.technical-note{margin-top:28px;border-top:1px solid var(--line);font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.65}.technical-note h3{font-size:19px;font-weight:600;margin:22px 0 8px}.technical-note p{margin:10px 0}.technical-note .equation{overflow-x:auto;text-align:center;white-space:nowrap;padding:14px 4px;font-size:20px;font-style:italic}.technical-note sup{font-size:.65em}
